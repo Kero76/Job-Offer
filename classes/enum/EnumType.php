@@ -4,10 +4,9 @@ namespace JobOffer\classes\enum;
 
 /**
  *
- * @abstract
  * @author Nicolas GILLE
  */
-abstract class EnumType {
+class EnumType {
     
     /**
      * Name give at the new element of the enum list.
@@ -16,14 +15,18 @@ abstract class EnumType {
      *  Name of the enum's element.
      */
     private $_key;
-    
+         
     /**
-     * Value associated at the specific key.
-     * @access private
-     * @var mixed
-     *  Value associated with Key
+     * This constructor is used for creating enum element into enum.
+     * Contains only the potential type of contract.
+     * For example, can be found "CDI, CDD, Temps plein, Stage, ...".
+     * @access public
+     * @param array $data
+     *  An aray composed by a Key, where the key represent the name of enum element.
      */
-    private $_value;
+    public function __construct($data) {
+        $this->hydrate($data);
+    }
     
     /**
      * Return the key of EnumType.
@@ -36,46 +39,26 @@ abstract class EnumType {
     }
     
     /**
-     * Return the value of EnumType
-     * @access public
-     * @return mixed
-     *  Return the content value of enum type.
-     */
-    public function getValue() {
-        return $this->_value;
-    }
-    
-    /**
      * Replace the current key by another key, or asign the value from the Database.
-     * @access public
+     * @access private
      * @param string $key
      *  Replace current key by new key.
      */
-    private function setKey($key) {
+    private function _setKey($key) {
         $this->_key = $key;
     }
-    
-    /**
-     * Replace the current value by another value, or asign the value from the Database.
-     * @access public
-     * @param type $value
-     *  Replace current value by new value.
-     */
-    private function setValue($value) {
-        $this->_value = $value;
-    }
-        
+       
     /**
      * This function is used for hydrate Object.
      * For hydrate on object, call hydrate function on __construct 
      * and your object will be create directly without calling all setters functions.
-     * @access public
+     * @access private
      * @param array $data
      *  Data received from an array with enum elements.
      */
-    protected function hydrate(array $data) {
+    private function _hydrate(array $data) {
         foreach ($data as $key => $value) {
-            $method = 'set' . ucfirst($key);
+            $method = '_set' . ucfirst($key);
             if (method_exists($this, $method)) {
                 $this->$method($value);
             }

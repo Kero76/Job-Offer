@@ -28,11 +28,13 @@ class Enum {
     
     /**
      * Added new element at the end of the enum.
+     * It verify in the first time if the key is not present in the enum before added it.
      * @param EnumType $element
      *  Element to add at the queue of the enum.
      */
     public function addEnumElement(EnumType $element) {
-        $this->_enum[] =  $element;
+        if (!$this->keyExists($element->getKey()))
+            $this->_enum[] =  $element;
     }
     
     /**
@@ -45,10 +47,10 @@ class Enum {
      * @access public
      * @param string $key
      *  The key who searching in the enum.
-     * @return int
+     * @return integer
      *  The rank of key in the enum.
      */
-    public function getIdByKey($key) {
+    public static function getIdByKey($key) {
         if ($this->keyExists($key)) {
             return array_search($key, $this->_enum);
         }
@@ -68,7 +70,7 @@ class Enum {
      * @return \JobOffer\classes\enum\OfferType
      *  Return an OfferType object.
      */
-    public function getKeyById($id) {
+    public static function getKeyById($id) {
         if (count($this->_enum) < $id && $id > 0) {
             return $this->_enum[$id];
         }
@@ -85,5 +87,15 @@ class Enum {
      */
     public function keyExists($key) {
         return array_key_exists($key, $this->_enum);
+    }
+    
+    /**
+     * This function return the enum.
+     * @access public
+     * @return array
+     *  Return the enum.
+     */
+    public function getEnum() {
+        return $this->_enum;
     }
 }

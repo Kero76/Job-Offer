@@ -2,19 +2,19 @@
 
 namespace JobOffer\classes\domain;
 
-use JobOffer\classes\enum\OfferType;
+use JobOffer\classes\enum\EnumType;
+
 
 /**
  *
- * @abstract
  * @author Nicolas GILLE
  */
-abstract class Offer {
+class Offer {
     
     /**
      * Unique id of the offer. It used when 2 offers have the same names 
-     * ans the same caracteristics.
-     * @var int
+     * and the same caracteristics.
+     * @var integer
      *  Unique id of the offer.
      */
     private $_id;
@@ -26,47 +26,33 @@ abstract class Offer {
      *  Title of the offer. 
      */
     private $_title;
-    
+   
     /**
-     * Intro of the offer.
+     * Content of the Offer
      * @access private
      * @var string 
-     *  Introduction present in the begin of the offer.
+     *  Content of the offer.
      */
-    private $_intro;
-    
-    /**
-     * Assignements necessary for job.
-     * @access private
-     * @var string 
-     *  Assignements necessary for the job.
-     */
-    private $_assignments;
-    
-    /**
-     * Knowledge necessary for the job.
-     * @access private
-     * @var string 
-     *  Knowledge necessary for the job.
-     */
-    private $_knowledges;
-    
-    /**
-     * Extra information about job.
-     * For example, we can be found "salary, movements necessary, ...".
-     * @access private
-     * @var string 
-     *  Extra informations about offer.
-     */
-    private $_extra;
-    
+    private $_content;
     /**
      * Type of offer.
      * @access private
-     * @var OfferType 
+     * @var EnumType 
      *  Type of offer.
      */
     private $_type;
+    
+    /**
+     * Constuctor of an Offe.
+     * It using hydrate function for created directly my Object,
+     * without calling all setters functions.
+     * @access public
+     * @param mixed $data
+     *  Data received from the database.
+     */
+    public function __construct($data) {
+        $this->_hydrate($data);
+    }
     
     /**
      * Return identifiant.
@@ -89,56 +75,20 @@ abstract class Offer {
     }
     
     /**
-     * Return intro value.
+     * Return content value.
      * @access public
      * @return string 
-     *  Return the introduction of the offer.
+     *  Return the content of the offer.
      */
-    public function getIntro() {
-        return $this->_intro;
+    public function getContent() {
+        return $this->_content;
     }
     
     /**
-     * Return the assignements as an array.
-     * It return an array and not a string, because in the view,
-     * it's so easy to process an array for HTML presentation.
+     * Return an Object EnumTYpe.
      * @access public
-     * @return array
-     *  Return the assignements value as an array.
-     */
-    public function getAssignements() {
-        $assignements = explode(',', $this->_assignments);
-        return $assignements;
-    }
-    
-    /**
-     * Return the knowledges as an array.
-     * It return an array and not a string, because in the view,
-     * it's so easy to process an array for HTML presentation.
-     * @access public
-     * @return array
-     *  Return the knowledges value as an array.
-     */
-    public function getKnowledges() {
-        $knowledges = explode(',', $this->_knowledges);
-        return $knowledges;
-    }
-    
-    /**
-     * Return extra information value.
-     * @access public
-     * @return string
-     *  Return the extra informations about offer.
-     */
-    public function getExtra() {
-        return $this->_extra;
-    }
-    
-    /**
-     * Return an Object OfferType.
-     * @access public
-     * @return \JobOffer\classes\domain\OfferType
-     *  Return an Object OfferType.
+     * @return \JobOffer\classes\domain\EnumType
+     *  Return an Object EnumType.
      */
     public function getType() {
         return $this->_type;
@@ -165,55 +115,25 @@ abstract class Offer {
     }
     
     /**
-     * Replace the current intro by new introduction, or asign the value from the Database.
+     * Replace the current content by new cpntent, or asign the value from the Database.
      * @access public
-     * @param string $intro
-     *  New introduction
+     * @param string $content
+     *  New content
      */
-    public function setIntro($intro) {
-        $this->_intro = $intro;
-    }
-        
-    /**
-     * Replace assignements by new assignements, or asign the value from the Database.
-     * @access public
-     * @param string $assignements
-     *  New assignements
-     */
-    public function setAssignements($assignements) {
-        $this->_assignments = $assignements;
-    }
-    
-    /**
-     * Replace knowledged by new knowledges, or asign the value from the Database.
-     * @access public
-     * @param string $knowledges
-     *  New knowledges
-     */
-    public function setKnowledges($knowledges) {
-        $this->_knowledges = $knowledges;
-    }
-    
-    /**
-     * Replace extra information by new extra informations, or asign the value from the Database.
-     * @access public
-     * @param string $extra
-     *  New extra informations
-     */                 
-    public function setExtra($extra) {
-        $this->_extra = $extra;
+    public function setContent($content) {
+        $this->_title = $content;
     }
     
     /**
      * Replace type of offer by another Type, or asign the value from the Database.
-     * We verify in the first step if the type passed on parameter is a OfferType.
-     * If the parameter isn't a OfferType, the type isn't modify.
+     * We verify in the first step if the type passed on parameter is a EnumTYpe.
+     * If the parameter isn't a EnumTYpe, the type isn't modify.
      * @access public
-     * @param \JobOffer\classes\domain\OfferType $type
+     * @param \JobOffer\classes\domain\EnumType $type
      *  Type of offer.
      */
-    public function setType(OfferType $type) {
-        if ($type instanceof OfferType)
+    public function setType(EnumType $type) {
+        if ($type instanceof EnumType)
             $this->_type = $type;
     }
     
@@ -221,11 +141,11 @@ abstract class Offer {
      * This function is used for hydrate Object.
      * For hydrate on object, call hydrate function on __construct 
      * and your object will be create directly without calling all setters functions.
-     * @access public
+     * @access private
      * @param array $data
      *  Data received from the database.
      */
-    protected function hydrate(array $data) {
+    private function _hydrate(array $data) {
         foreach ($data as $key => $value) {
             $method = 'set' . ucfirst($key);
             if (method_exists($this, $method)) {
