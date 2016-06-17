@@ -13,26 +13,32 @@
  */
 
 /*
- * Job Offer is free software: you can redistribute it and/or modify
+ * This is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 2 of the License, or
  * any later version.
- * Job Offer is distributed in the hope that it will be useful,
+ * This is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
- * along with Job Offer. If not, see https://www.gnu.org/licenses/gpl-2.0.html.
+ * along with this program. If not, see https://www.gnu.org/licenses/gpl-2.0.html.
  */
+
+require_once('classes/Offer.class.php');
+require_once('classes/EnumType.class.php');
+require_once('classes/Enum.class.php');
+require_once('classes/DAO.class.php');
 
 if (!class_exists('JobOffer')) {
     class JobOffer {
         
         /**
-         * This constructor is used for adding action will create by application.
+         * This constructor is used for adding action when create by application.
          */
         public function __construct() {
             add_action('admin_menu', array($this, 'init'));
+            add_action('wp_enqueue_scripts', array($this, 'enqueueStyleSheet'));
         }
         
         /**
@@ -85,13 +91,77 @@ if (!class_exists('JobOffer')) {
         }
         
         public function createAdminFormPage() {
-            require_once('template-admin-page.php');
+            $page = $_GET['p'];
+            switch($page) {
+                case 'view' :
+                    require_once('template-update-offer-admin-page.php');
+                    break;
+                
+                default:
+                    require_once('template-add-offer-admin-page.php');
+                    break;
+            }
+            
+            /** SECTION INSERT **/
+            if ($_GET['action'] == 'addoffer') {
+                if ((trim($_POST['jo_title']) != '') &&
+                    (trim($_POST['jo_content']) != '') &&
+                    (trim($_POST['jo_type']) != '')) {
+                    
+                    $id = DAO::getMaxId() + 1;
+                    if ($id == '') {
+                        $id = 0;
+                    }
+                    
+                    $enum = new Enum();                                        
+                    $offerType = $enum->getEnum()[$_POST['jo_type']];
+                    
+                    $data = array(
+                        'id' => $id,
+                        'title' => $_POST['jo_title'],
+                        'content' => $_POST['jo_content'],
+                        'type' => $offerType,
+                    );
+                    
+                    $offer = new Offer($data);
+                    if (DAO::insert($offer)) {
+                        echo "Fix it, problem from WAMP (option not activated) ?";
+                        //header('Location:' . get_bloginfo('url') . '/wp-admin/options-general.php?page=job-offer/job-offer.php&offer=ok');               
+                    } else {
+                        echo '<span class="error-job-offer bold-job-offer">An error occured, please contact a developper for fix it.</span>';     
+                    }
+                }
+            } 
+            
+            /** SECTION UPDATE **/
+            else if ($_GET['action'] == 'updateoffer') {
+                
+            }
+            
+            /** SECTION DELETE **/
+            else if ($_GET['action'] == 'deleteoffer') {
+                
+            }
+            
+            if ($_GET['offer'] == 'addok') {
+                echo '<span class="success-job-offer bold-job-offer">Your offer was correctly inserted.</span>';
+            } else if ($_GET['offer'] == 'deleteok') {
+                echo '<span class="success-job-offer bold-job-offer">Your offer was correctly deleted.</span>';
+            }
+       }
+       
+       /**
+        * This function register and enqueue plugin stylesheet to the wordpress stylesheet queue.
+        */
+       public function enqueueStyleSheet() {
+           wp_register_script('job-offer-style', plugins_url('css/style.css', __FILE__));
+           wp_enqueue_style('job-offer-style');
        }
     }
 }
 
 /*
- *  Creation of an instance of JobOffer object if class not exists in wordpress or other plugin core.
+ * Creation of an instance of JobOffer object if class not exists in wordpress or other plugin core.
  */
 if (class_exists('JobOffer')) {
     $jobOffer = new JobOffer();
