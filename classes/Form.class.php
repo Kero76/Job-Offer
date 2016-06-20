@@ -63,13 +63,16 @@ class Form {
      * @access public
      * @param Enum $enum
      *  Enumerator containing all elements to display.
-     * @param integer $id
-     *  Id for added 'selected' attributes on option field.
-     *  If this value is '-1', no enumerator element was selected.
+     * @param object $type
+     *  $type is an EnumType object.
+     * If $type === null, then it significate we added new offer,
+     * else, significate we modified an offer and we recover the good type from Enum.
      * @return string
      *  The html field for an select type.
      */
-    public function getTypeOfferForm(Enum $enum, $id = '-1') {        
+    public function getTypeOfferForm(Enum $enum, EnumType $type = null) {
+        if ($type !== null)
+            $id = $enum->getIdByKey($type->getKey());
         $str = '<select name="jo_type" id="jo_type" />';
         for ($i = 0; $i < count($enum->getEnum()); $i++) {
             if ($id == $i) {
@@ -84,7 +87,7 @@ class Form {
     }
     
     /**
-     * This function return a string wh who represent an input type submit html field.
+     * This function return a string who represent an input type submit html field.
      * 
      * @access public
      * @return string
@@ -92,5 +95,18 @@ class Form {
      */
     public function getSubmitButton() {
         return '<input class="button button-primary" type="submit" name="jo_submit" id="jo_submit" value="Save the Offer" />';
+    }
+    
+    /**
+     * This function return a string <ho represent an input type hidden htmk field.
+     * It used only on update form because when update, it's necessary
+     * to spent the id for modified the good entry on Database.
+     * 
+     * @access public
+     * @param integer $id
+     *  The hidden id value.
+     */
+    public function getHiddenIdButton($id) {
+        return '<input type="hidden" name="jo_id" id="jo_id" value="' . $id . '" />';
     }
 }

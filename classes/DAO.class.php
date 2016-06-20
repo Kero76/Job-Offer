@@ -24,11 +24,12 @@ class DAO {
         global $wpdb;
         $tableName = $wpdb->prefix . 'job_offer';
         if ($id == -1) {
-            $sql = 'SELECT [*] FROM ' . $tableName;
+            $sql = 'SELECT * FROM ' . $tableName;
+            return $wpdb->get_results($sql, ARRAY_A);   
         } else {
             $sql = 'SELECT * FROM ' . $tableName . ' WHERE id = ' . $id;
+            return $wpdb->get_row($sql, ARRAY_A);   
         }
-        return $wpdb->get_results($sql, ARRAY_A);   
     }
     
     /**
@@ -51,7 +52,8 @@ class DAO {
         $enum = new Enum();       
         $idType = $enum->getIdByKey($offer->getType()->getKey());
         
-        $sql = $wpdb->insert($tableName,
+        $sql = $wpdb->insert(
+            $tableName,
             array(
                 'id' => $offer->getId(),
                 'title' => $offer->getTitle(),
@@ -89,11 +91,15 @@ class DAO {
     public static function update(Offer $offer) {
         global $wpdb;
         $tableName = $wpdb->prefix . 'job_offer';
-        $sql = $wpdb->update($tableName,
+        $enum = new Enum();       
+        $idType = $enum->getIdByKey($offer->getType()->getKey());        
+        
+        $sql = $wpdb->update(
+            $tableName,
             array(
-                'title' => '',
-                'content' => '',
-                'type' => '',
+                'title' => $offer->getTitle(),
+                'content' => $offer->getContent(),
+                'type' => $idType,
             ),
             array('id' => $offer->getId()),
             array(
@@ -112,24 +118,24 @@ class DAO {
     
     /**
      * This function delete on entry in the Database.
-     * It using the Object passed on parameter for obtain the id
-     * and remove the good entry from the Database.
+     * It using the id passed on parameter for remove the good entry from the Database.
      * This function return the result of the sql query.
      * True if the request is successful, then return false.
      * 
      * @access public
      * @global object $wpdb
      *  Global Object present on WordPress Core.
-     * @param Offer $offer
-     *  Offer who will delete.
+     * @param integer $id
+     *  Id of offer who deleted.
      * @return bool
      *  True if the request is successful, then false.
      */
-    public static function delete(Offer $offer) {
+    public static function delete($id) {
         global $wpdb;
         $tableName = $wpdb->prefix . 'job_offer';
-        $sql = $wpdb->delete($tableName, 
-            array('id' => $offer->getId()), 
+        $sql = $wpdb->delete(
+            $tableName, 
+            array('id' => $id), 
             array('%d')
         );
         

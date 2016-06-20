@@ -63,26 +63,24 @@ class Enum {
     }
     
     /**
-     * Return an Offer thank to the rank in the enum.
+     * Return an Offer thanks to the rank in the enum.
      * If the id is greater than the size of enum or is negative, 
      * the function return -1.
      * This function is used mainly because, when we recover the value of the type in Database,
-     * we recover an int who representing the id in enum. 
-     * So, you use this function for convert this data into an OfferType object.
+     * we recover an int who represent the id in enum. 
+     * So, you use this function for convert this data into a key string, and create object thanks that.
      * 
      * @access public
      * @param int $id
      *  Rank of seraching the current element's enum.
-     * @return object
-     *  Return an EnumType object.
+     * @return string
+     *  Return a string.
      */
     public function getKeyById($id) {
-        $enum = new Enum();
-        if (count($enum->getEnum()) > $id || $id < 0) {
+        if ($id > count($this->_enum) || $id < 0) {
             return -1;
         }
-        $type = new EnumType((array('key', $enum->getEnum()[$id]->getKey())));
-        return $type;
+        return $this->_enum[$id]->getKey();
     }
     
     /**

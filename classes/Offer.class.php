@@ -65,12 +65,13 @@ class Offer {
     public function __toString() {
         $str = '';
         $str .= 'Id : ' . $this->_id;
-        $str .= ' ----- <br />';
+        $str .= '<br />';
         $str .= 'Title : ' . $this->_title;
-        $str .= ' ----- <br />';
+        $str .= '<br />';
         $str .= 'Content : ' . $this->_content;
-        $str .= ' ----- <br />';
+        $str .= '<br />';
         $str .= 'Type : ' . $this->_type->getKey();
+        $str .= '<br /> ----- <br />';
         return $str;
     }
     
