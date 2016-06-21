@@ -10,30 +10,30 @@
     $cols = 100;
 ?>
 <div class="wrap">
-    <h2>Job Offer</h2>
+    <h2><?php _e('Job Offer', 'job-offer'); ?></h2>
 </div>
 
 <div>
-    <h3 class="job-offer-title">Add a new Offer.</h3>
+    <h3 class="job-offer-title"><?php _e('Add a new Offer', 'job-offer'); ?></h3>
     <form action="?page=job-offer/job-offer.php&action=addoffer" method="post">
         <table class="form-table">
             <tr>
-                <th><label for="jo_title">Title</label></th>
-                <td><?php echo $form->getTitleForm(); ?></td>
+                <th><label for="jo_title"><?php _e('Title', 'job-offer'); ?></label></th>
+                <td><?php echo $form->get_title_form(); ?></td>
             </tr>
             
             <tr>
-                <th><label for="jo_content">Content</label></th>
-                <td><?php echo $form->getContentForm($rows, $cols); ?></td>
+                <th><label for="jo_content"><?php _e('Content', 'job-offer'); ?></label></th>
+                <td><?php echo $form->get_content_form($rows, $cols); ?></td>
             </tr>
             
             <tr>
-                <th><label for="jo_type">Type</label></th>
-                <td><?php echo $form->getTypeOfferForm($enum); ?></td>
+                <th><label for="jo_type"><?php _e('Type', 'job-offer'); ?></label></th>
+                <td><?php echo $form->get_type_offer_form($enum); ?></td>
             </tr>
             
             <tr>
-                <td><?php echo $form->getSubmitButton(); ?></td>
+                <td><?php echo $form->get_submit_button_form(); ?></td>
             </tr>            
         </table>
         

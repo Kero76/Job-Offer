@@ -1,15 +1,23 @@
 /**
  * Using jQuery and not $ to writing code because Wordpress
  * uses '$' selector and if I use it too, it can create some bugs.
+ * This function permit to autoselect the shortcode from the admin page
+ * for paste it directly.
+ * For that, we loop and count all tr marker, and finally remove the last,
+ * because the '<tr>' in header table is counting too.
  * 
- * @param {type} param
+ * @param {object} document
+ *  The object represent the page.
  */
 jQuery(document).ready(function() {
-   
-    /**
-     * Used for 'autoselect' the shortcode present in admin view page.
-     */
-    jQuery("#jo_shortcode").click(function() {
-       this.select();
-   });
+    var lastIndex = 0;
+    jQuery('#view-table tr').each(function() {
+        lastIndex++;
+    });
+    
+    for (var i = 0; i < lastIndex; i++) {
+        jQuery('#jo_shortcode_' + i).click(function() {
+            jQuery(this).select();
+        });
+    }
 });

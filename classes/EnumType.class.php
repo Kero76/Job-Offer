@@ -24,11 +24,11 @@ class EnumType {
      *  The name of the enum element.
      */
     public function __construct($key) {
-        $this->_setKey($key);
+        $this->_set_key($key);
     }
     
     public function __toString() {
-        return $this->getKey();
+        return $this->get_key();
     }
     
     /**
@@ -38,7 +38,7 @@ class EnumType {
      * @return string
      *  Return the key of enum type.
      */
-    public function getKey() {
+    public function get_key() {
         return $this->_key;
     }
     
@@ -49,7 +49,7 @@ class EnumType {
      * @param string $key
      *  Replace current key by new key.
      */
-    private function _setKey($key) {
+    private function _set_key($key) {
         $this->_key = $key;
     }    
 }

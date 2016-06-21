@@ -34,8 +34,8 @@ class Enum {
      * @param EnumType $element
      *  Element to add at the queue of the enum.
      */
-    public function addEnumElement(EnumType $element) {
-        if (!$this->keyExists($element->getKey()))
+    public function add_enum_element(EnumType $element) {
+        if (!$this->key_exists($element->get_key()))
             $this->_enum[] = $element;
     }
     
@@ -53,9 +53,9 @@ class Enum {
      * @return integer
      *  The rank of key in the enum.
      */
-    public function getIdByKey($key) {
+    public function get_id_by_key($key) {
         for ($i = 0; $i < count($this->_enum); $i++) {
-            if (strcmp($key, $this->_enum[$i]->getKey()) == 0) {
+            if (strcmp($key, $this->_enum[$i]->get_key()) == 0) {
                 return $i;
             }
         }
@@ -76,11 +76,11 @@ class Enum {
      * @return string
      *  Return a string.
      */
-    public function getKeyById($id) {
+    public function get_key_by_id($id) {
         if ($id > count($this->_enum) || $id < 0) {
             return -1;
         }
-        return $this->_enum[$id]->getKey();
+        return $this->_enum[$id]->get_key();
     }
     
     /**
@@ -92,7 +92,7 @@ class Enum {
      * @return bool
      *  Return true if the key exist, then return false.
      */
-    public function keyExists($key) {
+    public function key_exists($key) {
         return array_key_exists($key, $this->_enum);
     }
     
@@ -103,7 +103,7 @@ class Enum {
      * @return array
      *  Return the enum.
      */
-    public function getEnum() {
+    public function get_enum() {
         return $this->_enum;
     }
     
@@ -118,14 +118,14 @@ class Enum {
      */
     private function _init_enum() {
         $data = array(
-          'Permanent position', // CDD
-          'Temporary position', // CDI
-          'Full-time',          // Temps plein
-          'Traineeship',        // Stage
+          __('Permanent position', 'job-offer'), // CDD
+          __('Temporary position', 'job-offer'), // CDI
+          __('Full-time', 'job-offer'),          // Temps plein
+          __('Traineeship', 'job-offer'),        // Stage
         );      
         
         for ($i = 0; $i < count($data); $i++) {
-            $this->addEnumElement(new EnumType($data[$i]));
+            $this->add_enum_element(new EnumType($data[$i]));
         }
     }
 }

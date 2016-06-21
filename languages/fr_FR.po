@@ -1,0 +1,114 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: job-offer\n"
+"POT-Creation-Date: 2016-06-21 17:16+0200\n"
+"PO-Revision-Date: 2016-06-21 17:24+0200\n"
+"Last-Translator: \n"
+"Language-Team: Nicolas GILLE <nic.gille@gmail.com>\n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.8\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: classes/Enum.class.php:121
+msgid "Permanent position"
+msgstr "CDD"
+
+#: classes/Enum.class.php:122
+msgid "Temporary position"
+msgstr "CDI"
+
+#: classes/Enum.class.php:123
+msgid "Full-time"
+msgstr "Temps plein"
+
+#: classes/Enum.class.php:124
+msgid "Traineeship"
+msgstr "Stage"
+
+#: job-offer.php:138 job-offer.php:158 job-offer.php:169
+msgid "An error occured, please contact a developper for fix it."
+msgstr "Une erreur interne est survenue, merci de contacter le développeur pour corriger ça."
+
+#: job-offer.php:181
+msgid "Your offer was correctly inserted."
+msgstr "Votre offre à bien été ajouté."
+
+#: job-offer.php:183
+msgid "Your offer was correctly deleted."
+msgstr "Votre offre à bien été supprimé."
+
+#: job-offer.php:185
+msgid "Your offer was correctly updated."
+msgstr "Votre offre a bien été mis à jour."
+
+#: template-add-offer-admin-page.php:13 template-update-offer-admin-page.php:17
+#: template-view-offer-admin-page.php:6
+msgid "Job Offer"
+msgstr "Offre d'emploi"
+
+#: template-add-offer-admin-page.php:17
+msgid "Add a new Offer"
+msgstr "Ajouter une nouvelle offre"
+
+#: template-add-offer-admin-page.php:21 template-update-offer-admin-page.php:25
+msgid "Title"
+msgstr "Titre"
+
+#: template-add-offer-admin-page.php:26 template-update-offer-admin-page.php:30
+msgid "Content"
+msgstr "Contenu"
+
+#: template-add-offer-admin-page.php:31 template-update-offer-admin-page.php:35
+msgid "Type"
+msgstr "Type"
+
+#: template-update-offer-admin-page.php:21
+msgid "Update an Offer"
+msgstr "Modifier une offre"
+
+#: template-view-offer-admin-page.php:10
+msgid "Views all offers"
+msgstr "Voir toutes les offres"
+
+#: template-view-offer-admin-page.php:11
+msgid "Add new offer"
+msgstr "Ajouter une nouvelle offre"
+
+#: template-view-offer-admin-page.php:14
+msgid "Id of offer"
+msgstr "Identifiant de l'offre"
+
+#: template-view-offer-admin-page.php:15
+msgid "Type of offer"
+msgstr "Type de l'offre"
+
+#: template-view-offer-admin-page.php:16
+msgid "Title of offer"
+msgstr "Titre de l'offre"
+
+#: template-view-offer-admin-page.php:17
+msgid "Update offer"
+msgstr "Modifier une offre"
+
+#: template-view-offer-admin-page.php:18
+msgid "Delete offer"
+msgstr "Supprimer une offre"
+
+#: template-view-offer-admin-page.php:19
+msgid "Shortcode"
+msgstr "Shortcode"
+
+#: template-view-offer-admin-page.php:26
+msgid "Update"
+msgstr "Mise à jour"
+
+#: template-view-offer-admin-page.php:27
+msgid "Delete"
+msgstr "Suppression"

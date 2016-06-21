@@ -41,14 +41,15 @@ if (!class_exists('JobOffer')) {
         public function __construct() {
             if (function_exists('add_action')) {
                 $page = add_action('admin_menu', array($this, 'init'));
-                add_action('load-' . $page, array($this, 'registerStylesheet'));
-                add_action('admin_enqueue_scripts', array($this, 'registerStylesheet'));
-                add_action('admin_enqueue_scripts', array($this, 'registerScripts'));
+                add_action('load-' . $page, array($this, 'register_stylesheet'));
+                add_action('admin_enqueue_scripts', array($this, 'register_stylesheet'));
+                add_action('admin_enqueue_scripts', array($this, 'register_scripts'));
+                add_action('init', array($this, 'load_textdomain'));
                 //add_action('init', array($this, 'createPost'));
             }
             if (function_exists('add_shortcode')) {
-                add_shortcode('jo_jobs', array($this, 'shortcodeAllOffers'));
-                add_shortcode('jo_job', array($this, 'shortcodeOffer'));
+                add_shortcode('jo_jobs', array($this, 'shortcode_all_offers'));
+                add_shortcode('jo_job', array($this, 'shortcode_offer'));
             }
         }
         
@@ -63,7 +64,7 @@ if (!class_exists('JobOffer')) {
                                  'Job Offer', 
                                  'administrator', 
                                  __FILE__, 
-                                 array($this, 'createFormPage'));
+                                 array($this, 'create_form_page'));
             }
         }
         
@@ -96,7 +97,7 @@ if (!class_exists('JobOffer')) {
          * 
          * @access public
          */
-        public function createFormPage() {
+        public function create_form_page() {
             switch($_GET['p']) {
                 /** Insert page **/
                 case 'insert' :
@@ -119,12 +120,12 @@ if (!class_exists('JobOffer')) {
                 /** INSERT SECTION **/
                 case 'addoffer' :
                     if ((trim($_POST['jo_title']) != '') && (trim($_POST['jo_content']) != '') && (trim($_POST['jo_type']) != '')) {                    
-                        $id = DAO::getMaxId() + 1;
+                        $id = DAO::get_max_id() + 1;
                         if ($id == '') {
                             $id = 0;
                         }
                         $enum = new Enum();
-                        $offerType = $enum->getEnum()[$_POST['jo_type']];
+                        $offerType = $enum->get_enum()[$_POST['jo_type']];
                         $data = array(
                             'id' => $id,
                             'title' => $_POST['jo_title'],
@@ -135,7 +136,7 @@ if (!class_exists('JobOffer')) {
                         if (DAO::insert($offer)) {
                             //header('Location:' . get_bloginfo('url') . '/wp-admin/options-general.php?page=job-offer/job-offer.php&offer=ok');
                         } else {
-                            echo '<span class="error-job-offer bold-job-offer">An error occured, please contact a developper for fix it.</span>';
+                            echo '<span class="error-job-offer bold-job-offer">' . __('An error occured, please contact a developper for fix it.', 'job-offer') . '</span>';
                         }
                     }
                     break;
@@ -144,7 +145,7 @@ if (!class_exists('JobOffer')) {
                 case 'updateoffer' :
                     if ((trim($_POST['jo_title']) != '') && (trim($_POST['jo_content']) != '') && (trim($_POST['jo_type']) != '')) {
                         $enum = new Enum();
-                        $offerType = $enum->getEnum()[$_POST['jo_type']];
+                        $offerType = $enum->get_enum()[$_POST['jo_type']];
                         $data = array(
                             'id' => $_POST['jo_id'],
                             'title' => $_POST['jo_title'],
@@ -155,7 +156,7 @@ if (!class_exists('JobOffer')) {
                         if (DAO::update($offer)) {
                             //header('Location:' . get_bloginfo('url') . '/wp-admin/options-general.php?page=job-offer/job-offer.php&updateoffer=ok');
                         } else {
-                            echo '<span class="error-job-offer bold-job-offer">An error occured, please contact a developper for fix it.</span>';
+                            echo '<span class="error-job-offer bold-job-offer">' . __('An error occured, please contact a developper for fix it.', 'job-offer') . '</span>';
                         }
                     }
                     break;
@@ -166,7 +167,7 @@ if (!class_exists('JobOffer')) {
                         if (DAO::delete(intval($_GET['id']))) {
                             //header('Location:' . get_bloginfo('url') . '/wp-admin/options-general.php?page=job-offer/job-offer.php&updateoffer=ok');
                         } else {
-                            echo '<span class="job-offer-error job-offer-bold">An error occured, please contact a developper for fix it.</span>';
+                            echo '<span class="error-job-offer bold-job-offer">' . __('An error occured, please contact a developper for fix it.', 'job-offer') . '</span>';
                         }
                     }
                     break;
@@ -178,11 +179,11 @@ if (!class_exists('JobOffer')) {
             }
             
             if ($_GET['offer'] == 'addok') {
-                echo '<span class="job-offer-success job-offer-bold">Your offer was correctly inserted.</span>';
+                echo '<span class="job-offer-success job-offer-bold">' . __('Your offer was correctly inserted.', 'job-offer') . '</span>';
             } else if ($_GET['offer'] == 'deleteok') {
-                echo '<span class="job-offer-success job-offer-bold">Your offer was correctly deleted.</span>';
+                echo '<span class="job-offer-success job-offer-bold">' . __('Your offer was correctly deleted.', 'job-offer') . '</span>';
             } else if ($_GET['offer'] == 'updateOffer') {
-                echo '<span class="job-offer-success job-offer-bold">Your offer was correctly updated.</span>';
+                echo '<span class="job-offer-success job-offer-bold">' . __('Your offer was correctly updated.', 'job-offer') . '</span>';
             }
        }
        
@@ -193,7 +194,7 @@ if (!class_exists('JobOffer')) {
         * @return array
         *   An array who composed by Offer Object.
         */
-        public function getOffers() {
+        public function get_offers() {
             $offers = DAO::query();
             $enum = new Enum();
             $results = array();
@@ -202,7 +203,7 @@ if (!class_exists('JobOffer')) {
                     'id' => $offer['id'],
                     'title' => $offer['title'],
                     'content' => $offer['content'],
-                    'type' => new EnumType($enum->getKeyById(intval($offer['type']))),
+                    'type' => new EnumType($enum->get_key_by_id(intval($offer['type']))),
                 );
                 array_push($results, new Offer($data));
             }
@@ -219,7 +220,7 @@ if (!class_exists('JobOffer')) {
          * @return object
          *  A single Offer.
          */
-        public function getOffer($id) {
+        public function get_offer($id) {
             $offer = DAO::query($id);
             $enum = new Enum();
             
@@ -227,7 +228,7 @@ if (!class_exists('JobOffer')) {
                 'id' => $offer['id'],
                 'title' => $offer['title'],
                 'content' => $offer['content'],
-                'type' => new EnumType($enum->getKeyById(intval($offer['type']))),
+                'type' => new EnumType($enum->get_key_by_id(intval($offer['type']))),
             );
             return new Offer($data);
         }
@@ -237,7 +238,7 @@ if (!class_exists('JobOffer')) {
          * 
          * @access public
          */
-        public function registerStylesheet() {
+        public function register_stylesheet() {
             wp_register_style('job-offer-style', plugins_url('css/job-offer-style.css', __FILE__));
             wp_enqueue_style('job-offer-style');
         }
@@ -247,9 +248,19 @@ if (!class_exists('JobOffer')) {
          * 
          * @access public
          */
-        public function registerScripts() {
+        public function register_scripts() {
             wp_register_script('job-offer-admin-script', plugins_url('js/admin.js', __FILE__), 'jquery', '1.0');
+            wp_enqueue_script('jquery');
             wp_enqueue_script('job-offer-admin-script');
+        }
+        
+        /**
+         * This function load textdomain for add translations.
+         * 
+         * @access public
+         */
+        public function load_textdomain() {
+            load_plugin_textdomain('job-offer', plugins_url() . '/languages');
         }
         
        /**
@@ -258,9 +269,9 @@ if (!class_exists('JobOffer')) {
         * 
         * @access public
         */
-       public function shortcodeAllOffers() {
+       public function shortcode_all_offers() {
             if (isset($_GET['id'])) {
-                $this->shortcodeOffer($_GET['id']);
+                $this->shortcode_offer($_GET['id']);
             } else {
                 $str = '<table>';
                 $str .= '<tr>';
@@ -268,11 +279,11 @@ if (!class_exists('JobOffer')) {
                 $str .= '<th>Title</th>';
                 $str .= '</tr>';
 
-                $offers = $this->getOffers();
+                $offers = $this->get_offers();
                 foreach($offers as $offer) {
                      $str .= '<tr>';
-                     $str .= '<td class="' . str_replace(' ', '_', strtolower($offer->getType()->getKey())) . '">' . $offer->getType()->getKey() . '</td>';
-                     $str .= '<td><a class="job-offer-link" href="' . '&amp;id=' . $offer->getId() . '">' . $offer->getTitle() . '</a></td>';
+                     $str .= '<td class="' . str_replace(' ', '_', strtolower($offer->get_type()->get_key())) . '">' . $offer->get_type()->get_key() . '</td>';
+                     $str .= '<td><a class="job-offer-link" href="' . '&amp;id=' . $offer->get_id() . '">' . $offer->get_title() . '</a></td>';
                      $str .= '</tr>';
                 }
                 $str .= '</table>';
@@ -288,7 +299,7 @@ if (!class_exists('JobOffer')) {
         * @return string
         *   The content of the page.
         */
-       public function shortcodeOffer($id) {
+       public function shortcode_offer($id) {
            if ($id >= 0)
                 $offer = $this->getOffer($id['id']);
            $str = '<h2>' . $offer->getTitle() . '</h2>';

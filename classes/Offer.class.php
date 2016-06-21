@@ -70,7 +70,7 @@ class Offer {
         $str .= '<br />';
         $str .= 'Content : ' . $this->_content;
         $str .= '<br />';
-        $str .= 'Type : ' . $this->_type->getKey();
+        $str .= 'Type : ' . $this->_type->get_key();
         $str .= '<br /> ----- <br />';
         return $str;
     }
@@ -82,7 +82,7 @@ class Offer {
      * @return int 
      *  Unique identifiant of the offer.
      */
-    public function getId() {
+    public function get_id() {
         return $this->_id;
     }
     
@@ -93,7 +93,7 @@ class Offer {
      * @return string
      *  Return the title of the offer.
      */
-    public function getTitle() {
+    public function get_title() {
         return $this->_title;
     }
     
@@ -104,7 +104,7 @@ class Offer {
      * @return string 
      *  Return the content of the offer.
      */
-    public function getContent() {
+    public function get_content() {
         return $this->_content;
     }
     
@@ -115,7 +115,7 @@ class Offer {
      * @return \JobOffer\classes\domain\EnumType
      *  Return an Object EnumType.
      */
-    public function getType() {
+    public function get_type() {
         return $this->_type;
     }
      
@@ -126,7 +126,7 @@ class Offer {
      * @param int $id
      *  New id
      */
-    public function setId($id) {
+    public function set_id($id) {
         $this->_id = $id;
     }
       
@@ -137,7 +137,7 @@ class Offer {
      * @param string $title
      *  New title
      */
-    public function setTitle($title) {
+    public function set_title($title) {
         $this->_title = $title;
     }
     
@@ -148,7 +148,7 @@ class Offer {
      * @param string $content
      *  New content
      */
-    public function setContent($content) {
+    public function set_content($content) {
         $this->_content = $content;
     }
     
@@ -161,7 +161,7 @@ class Offer {
      * @param EnumType $type
      *  Type of offer.
      */
-    public function setType(EnumType $type) {
+    public function set_type(EnumType $type) {
         if ($type instanceof EnumType)
             $this->_type = $type;
     }
@@ -177,7 +177,7 @@ class Offer {
      */
     private function _hydrate(array $data) {
         foreach ($data as $key => $value) {
-            $method = 'set' . ucfirst($key);
+            $method = 'set_' . strtolower($key);
             if (method_exists($this, $method)) {  
                 $this->$method($value);
             }

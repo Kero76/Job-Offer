@@ -50,14 +50,14 @@ class DAO {
         global $wpdb;
         $tableName = $wpdb->prefix . 'job_offer';
         $enum = new Enum();       
-        $idType = $enum->getIdByKey($offer->getType()->getKey());
+        $idType = $enum->get_id_by_key($offer->get_type()->get_key());
         
         $sql = $wpdb->insert(
             $tableName,
             array(
-                'id' => $offer->getId(),
-                'title' => $offer->getTitle(),
-                'content' => $offer->getContent(),
+                'id' => $offer->get_id(),
+                'title' => $offer->get_title(),
+                'content' => $offer->get_content(),
                 'type' => $idType,
             ),
             array(
@@ -92,16 +92,16 @@ class DAO {
         global $wpdb;
         $tableName = $wpdb->prefix . 'job_offer';
         $enum = new Enum();       
-        $idType = $enum->getIdByKey($offer->getType()->getKey());        
+        $idType = $enum->get_id_by_key($offer->get_type()->get_key());        
         
         $sql = $wpdb->update(
             $tableName,
             array(
-                'title' => $offer->getTitle(),
-                'content' => $offer->getContent(),
+                'title' => $offer->get_title(),
+                'content' => $offer->get_content(),
                 'type' => $idType,
             ),
-            array('id' => $offer->getId()),
+            array('id' => $offer->get_id()),
             array(
                 '%s',
                 '%s',
@@ -150,11 +150,10 @@ class DAO {
      * @global object $wpdb
      *  Global Object present on WordPress core.
      */
-    public static function getMaxId() {
+    public static function get_max_id() {
         global $wpdb;
         $tableName = $wpdb->prefix . 'job_offer';
         $max = $wpdb->get_row("SELECT MAX(id) AS max FROM " . $tableName, ARRAY_A);
         return $max['max'];
     }
-    
 }

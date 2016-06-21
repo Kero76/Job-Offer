@@ -16,7 +16,7 @@ class Form {
      * @return string
      *  The html field for an input text type.
      */
-    public function getTitleForm($content = '') {
+    public function get_title_form($content = '') {
         if ($content == '') {
             return '<input type="text" name="jo_title" id="jo_title" size="100"/>';
         } else {
@@ -38,7 +38,7 @@ class Form {
      * @return string
      *  An TinyMCE editor or an textarea field.
      */
-    public function getContentForm($rows = 15, $cols = 100, $content = '') {        
+    public function get_content_form($rows = 15, $cols = 100, $content = '') {        
         if (function_exists('wp_editor')) {
             if ($content == '') {
                 return wp_editor('', 'jo_content');
@@ -70,15 +70,15 @@ class Form {
      * @return string
      *  The html field for an select type.
      */
-    public function getTypeOfferForm(Enum $enum, EnumType $type = null) {
+    public function get_type_offer_form(Enum $enum, EnumType $type = null) {
         if ($type !== null)
-            $id = $enum->getIdByKey($type->getKey());
+            $id = $enum->get_id_by_key($type->get_key());
         $str = '<select name="jo_type" id="jo_type" />';
-        for ($i = 0; $i < count($enum->getEnum()); $i++) {
+        for ($i = 0; $i < count($enum->get_enum()); $i++) {
             if ($id == $i) {
-                $str .= '<option value="' . $i . '" selected="selected">' . $enum->getEnum()[$i]->getKey() . '</option>';
+                $str .= '<option value="' . $i . '" selected="selected">' . $enum->get_enum()[$i]->get_key() . '</option>';
             } else {
-                $str .= '<option value="' . $i . '">' . $enum->getEnum()[$i]->getKey() . '</option>';
+                $str .= '<option value="' . $i . '">' . $enum->get_enum()[$i]->get_key() . '</option>';
             }
             $str .= "\n";
         }
@@ -93,7 +93,7 @@ class Form {
      * @return string
      *  The html field for an input submit type.
      */
-    public function getSubmitButton() {
+    public function get_submit_button_form() {
         return '<input class="button button-primary" type="submit" name="jo_submit" id="jo_submit" value="Save the Offer" />';
     }
     
@@ -106,7 +106,7 @@ class Form {
      * @param integer $id
      *  The hidden id value.
      */
-    public function getHiddenIdButton($id) {
+    public function get_hidden_id_button_form($id) {
         return '<input type="hidden" name="jo_id" id="jo_id" value="' . $id . '" />';
     }
 }
