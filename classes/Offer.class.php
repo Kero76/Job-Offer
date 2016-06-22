@@ -1,8 +1,16 @@
 <?php
 
 /**
- *
- * @author Nicolas GILLE
+ * This class represent an offer. 
+ * An offer is composed by :
+ *  - Id : Unique id for stored offer on database.
+ *  - Title : Title of an offer.
+ *  - Content : Content of an offer.
+ *  - Type : Sort of offer like Traineeship, Fill-Time, Permanent Position, ...
+ * When you work with an offer, you used only an Offer object for manipulate data about an offer.
+ * 
+ * @since Job Offer 1.0
+ * @version 1.0
  */
 class Offer {
     
@@ -10,6 +18,8 @@ class Offer {
      * Unique id of the offer. It used when 2 offers have the same names 
      * and the same caracteristics.
      * 
+     * @since Job Offer 1.0
+     * @access private
      * @var integer
      *  Unique id of the offer.
      */
@@ -18,6 +28,7 @@ class Offer {
     /**
      * Title of the Offer.
      * 
+     * @since Job Offer 1.0
      * @access private
      * @var string
      *  Title of the offer. 
@@ -27,6 +38,7 @@ class Offer {
     /**
      * Content of the Offer
      * 
+     * @since Job Offer 1.0
      * @access private
      * @var string 
      *  Content of the offer.
@@ -36,6 +48,7 @@ class Offer {
     /**
      * Type of offer.
      * 
+     * @since Job Offer 1.0
      * @access private
      * @var EnumType 
      *  Type of offer.
@@ -43,11 +56,12 @@ class Offer {
     private $_type;
     
     /**
-     * Constuctor of an Offe.
+     * Constuctor of an Offer.
+     * 
      * It using hydrate function for created directly my Object,
      * without calling all setters functions.
      * 
-     * @access public
+     * @since Job Offer 1.0
      * @param mixed $data
      *  Data received from the database.
      */
@@ -56,9 +70,11 @@ class Offer {
     }
     
     /**
+     * See details about an offer.
+     * 
      * Function used for see the details about an Offer.
      * 
-     * @access public
+     * @since Job Offer 1.0
      * @return string
      *  The current state of the offer.
      */
@@ -76,9 +92,9 @@ class Offer {
     }
     
     /**
-     * Return identifiant.
+     * Return id.
      * 
-     * @access public
+     * @since Job Offer 1.0
      * @return int 
      *  Unique identifiant of the offer.
      */
@@ -87,9 +103,9 @@ class Offer {
     }
     
     /**
-     * Return title value.
+     * Return title.
      * 
-     * @access public
+     * @since Job Offer 1.0
      * @return string
      *  Return the title of the offer.
      */
@@ -98,9 +114,9 @@ class Offer {
     }
     
     /**
-     * Return content value.
+     * Return content.
      * 
-     * @access public
+     * @since Job Offer 1.0
      * @return string 
      *  Return the content of the offer.
      */
@@ -111,8 +127,11 @@ class Offer {
     /**
      * Return an Object EnumTYpe.
      * 
-     * @access public
-     * @return \JobOffer\classes\domain\EnumType
+     * EnumType object represent the type of offer. 
+     * For example, we can return traineeship, full-time, ...
+     * 
+     * @since Job Offer 1.0
+     * @return EnumType
      *  Return an Object EnumType.
      */
     public function get_type() {
@@ -120,44 +139,48 @@ class Offer {
     }
      
     /**
+     * Set id of current offer.
      * Replace the current id by new id, or asign the value from the Database.
      * 
-     * @access public
+     * @since Job Offer 1.0
      * @param int $id
-     *  New id
+     *  Value of id.
      */
     public function set_id($id) {
         $this->_id = $id;
     }
       
     /**
+     * Set title of current offer.
      * Replace the current title by new title, or asign the value from the Database.
      * 
-     * @access public
+     * @since Job Offer 1.0
      * @param string $title
-     *  New title
+     *  Value of title.
      */
     public function set_title($title) {
         $this->_title = $title;
     }
     
     /**
+     * Set content of current offer.
      * Replace the current content by new cpntent, or asign the value from the Database.
      * 
-     * @access public
+     * @since Job Offer 1.0
      * @param string $content
-     *  New content
+     *  Value of content.
      */
     public function set_content($content) {
         $this->_content = $content;
     }
     
     /**
-     * Replace type of offer by another Type, or asign the value from the Database.
+     * Set type of current offer. 
+     * Replace type of offer by another EnumType, or asign the value from the Database.
      * We verify in the first step if the type passed on parameter is a EnumTYpe.
      * If the parameter isn't a EnumTYpe, the type isn't modify.
      * 
-     * @access public
+     * @since Job Offer 1.0
      * @param EnumType $type
      *  Type of offer.
      */
@@ -171,6 +194,7 @@ class Offer {
      * For hydrate on object, call hydrate function on __construct 
      * and your object will be create directly without calling all setters functions.
      * 
+     * @since Job Offer 1.0
      * @access private
      * @param array $data
      *  Data received from the database.

@@ -9,7 +9,7 @@
 <div>
     <h3 class="job-offer-title"><?php _e('Views all offers', 'job-offer'); ?></h3>
     <a href="?page=job-offer/job-offer.php&p=insert"><button class="button button-primary" ><?php _e('Add new offer', 'job-offer'); ?></button></a>
-    <table id="view-table" class="form-table">
+    <table id="job-offer-view-table" class="form-table">
         <tr>
             <th><?php _e('Id of offer', 'job-offer'); ?></th>
             <th><?php _e('Type of offer', 'job-offer'); ?></th>

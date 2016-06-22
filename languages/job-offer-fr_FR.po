@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: job-offer\n"
-"POT-Creation-Date: 2016-06-21 17:16+0200\n"
-"PO-Revision-Date: 2016-06-21 17:24+0200\n"
+"POT-Creation-Date: 2016-06-22 16:23+0200\n"
+"PO-Revision-Date: 2016-06-22 16:26+0200\n"
 "Last-Translator: \n"
 "Language-Team: Nicolas GILLE <nic.gille@gmail.com>\n"
 "Language: fr_FR\n"
@@ -16,37 +16,47 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: classes/Enum.class.php:121
+#: classes/Enum.class.php:133
 msgid "Permanent position"
 msgstr "CDD"
 
-#: classes/Enum.class.php:122
+#: classes/Enum.class.php:134
 msgid "Temporary position"
 msgstr "CDI"
 
-#: classes/Enum.class.php:123
+#: classes/Enum.class.php:135
 msgid "Full-time"
 msgstr "Temps plein"
 
-#: classes/Enum.class.php:124
+#: classes/Enum.class.php:136
 msgid "Traineeship"
 msgstr "Stage"
 
-#: job-offer.php:138 job-offer.php:158 job-offer.php:169
-msgid "An error occured, please contact a developper for fix it."
-msgstr "Une erreur interne est survenue, merci de contacter le développeur pour corriger ça."
+#: classes/Form.class.php:110
+msgid "Save the Offer"
+msgstr "Enregistrer l'offre"
 
-#: job-offer.php:181
+#: job-offer.php:175 job-offer.php:195 job-offer.php:206
+msgid "An error occured, please contact a developper for fix it."
+msgstr ""
+"Une erreur interne est survenue, merci de contacter le développeur pour "
+"corriger ça."
+
+#: job-offer.php:220
 msgid "Your offer was correctly inserted."
 msgstr "Votre offre à bien été ajouté."
 
-#: job-offer.php:183
+#: job-offer.php:224
 msgid "Your offer was correctly deleted."
 msgstr "Votre offre à bien été supprimé."
 
-#: job-offer.php:185
+#: job-offer.php:228
 msgid "Your offer was correctly updated."
 msgstr "Votre offre a bien été mis à jour."
+
+#: job-offer.php:379
+msgid "No offers founds"
+msgstr "Aucune offre n'a été trouvé."
 
 #: template-add-offer-admin-page.php:13 template-update-offer-admin-page.php:17
 #: template-view-offer-admin-page.php:6
@@ -107,7 +117,7 @@ msgstr "Shortcode"
 
 #: template-view-offer-admin-page.php:26
 msgid "Update"
-msgstr "Mise à jour"
+msgstr "Mettre à jour"
 
 #: template-view-offer-admin-page.php:27
 msgid "Delete"

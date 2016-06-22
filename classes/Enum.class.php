@@ -1,26 +1,38 @@
 <?php
 
+/**
+ * Includes EnumType class because when the enumerator is compose by object EnumType.
+ */
 require_once('EnumType.class.php');
 
 /**
- *
- * @author Nicolas GILLE
+ * This class represent an enumeration.
+ * This enumeration represent the different type present in Offer.
+ * For add new element in is enumeration, modified the function _init_enum()
+ * and add new element at the end of the array if you have create previously an offer.
+ * In fact, if you add a new type in the middle of the array, the potential id present in database 
+ * are potentially modifed and taht create possible bugs.
+ * 
+ * @since Job Offer 1.0
+ * @version 1.0
  */
 class Enum {
     
     /**
      * This is an array who contains all element present in enumeration.
      * 
+     * @since Job Offer 1.0
      * @access private
      * @var array 
-     *  Array who contains all enumerator elements.
+     *  Array which contains all enumerators elements.
      */
     private $_enum;
     
     /**
-     * This is a constructor for initialize an enumeration.
+     * Constructor of Enum object.
+     * This is a constructor for initialize enumeration.
      * 
-     * @access public
+     * @since Job Offer 1.0
      */
     public function __construct() {
         $this->_enum = array();
@@ -31,6 +43,7 @@ class Enum {
      * Added new element at the end of the enum.
      * It verify in the first time if the key is not present in the enum before added it.
      * 
+     * @since Job Offer 1.0
      * @param EnumType $element
      *  Element to add at the queue of the enum.
      */
@@ -47,9 +60,9 @@ class Enum {
      * So for that, and because the enumeration order don't change,
      * we can store directly the id.
      * 
-     * @access public
+     * @since Job Offer 1.0
      * @param string $key
-     *  The key who searching in the enum.
+     *  The key who search in the enum.
      * @return integer
      *  The rank of key in the enum.
      */
@@ -70,11 +83,11 @@ class Enum {
      * we recover an int who represent the id in enum. 
      * So, you use this function for convert this data into a key string, and create object thanks that.
      * 
-     * @access public
+     * @since Job Offer 1.0
      * @param int $id
-     *  Rank of seraching the current element's enum.
+     *  Rank of the current element enum.
      * @return string
-     *  Return a string.
+     *  Return a string representation of the EnumType.
      */
     public function get_key_by_id($id) {
         if ($id > count($this->_enum) || $id < 0) {
@@ -84,9 +97,10 @@ class Enum {
     }
     
     /**
-     * This function permit to verify if the current key is present or not in the enum.
+     * Verify if the key passed on parameter exists.
+     * This function allow to verify if the current key is present or not in the enum.
      * 
-     * @access public
+     * @since Job Offer 1.0
      * @param string $key
      *  The key search in enum.
      * @return bool
@@ -97,9 +111,9 @@ class Enum {
     }
     
     /**
-     * This function return the enum.
+     * This function return the enumerator.
      * 
-     * @access public
+     * @since Job Offer 1.0
      * @return array
      *  Return the enum.
      */
@@ -114,6 +128,7 @@ class Enum {
      *  Don't modify the current order of enum.
      * If you modify this, check beforehand that the SQL table is empty.
      * 
+     * @since Job Offer 1.0
      * @access private
      */
     private function _init_enum() {

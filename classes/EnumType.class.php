@@ -1,14 +1,18 @@
 <?php
 
 /**
- *
- * @author Nicolas GILLE
+ * This class represent an element present in Enum.
+ * An enum element is composed by on key in the form of String, like 'full-time, trainneship, ...'.
+ * 
+ * @since Job Offer 1.0
+ * @version 1.0
  */
 class EnumType {
     
     /**
      * Name give at the new element of the enum list.
      * 
+     * @since Job Offer 1.0
      * @access private
      * @var string
      *  Name of the enum's element.
@@ -19,7 +23,7 @@ class EnumType {
      * This constructor is used for creating enum element into enum.
      * Contains only the key in the form of string.
      * 
-     * @access public
+     * @since Job Offer 1.0
      * @param string $key
      *  The name of the enum element.
      */
@@ -27,6 +31,13 @@ class EnumType {
         $this->_set_key($key);
     }
     
+    /**
+     * Display information about the EnumType.
+     * 
+     * @since Job Offer 1.0
+     * @return string
+     *  A string representation of the key.
+     */
     public function __toString() {
         return $this->get_key();
     }
@@ -34,7 +45,7 @@ class EnumType {
     /**
      * Return the key of EnumType.
      * 
-     * @access public
+     * @since Job Offer 1.0
      * @return string
      *  Return the key of enum type.
      */

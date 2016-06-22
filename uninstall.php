@@ -10,11 +10,12 @@ if (!defined('WP_UNINSTALL_PLUGIN'))
 
 /**
  * Fucntion called when you desactivate the plugin.
- * When you deactivate this plugin, you drop the table in database for save many resource.
+ * When you deactivate this plugin, you drop the table in database for save many resources.
  * 
+ * @since Job Offer 1.0
  * @access public
  * @global object $wpdb
- *  Global Object present on WrodPress Core.
+ *  It's a represent of the Database access create by WordPress.
  */
 function uninstall() {
     global $wpdb;
@@ -25,4 +26,7 @@ function uninstall() {
     }
 }
 
+/**
+ * Called uninstall for initialize desinstallation.
+ */
 uninstall();

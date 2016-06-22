@@ -1,20 +1,27 @@
 <?php
 
+/**
+ * Includes Enum class because using Enum for insert new Offer.
+ */
 require_once('Enum.class.php');
 
 /**
- *
- * @author Nicolas GILLE
+ * This class represent the connexion between the model and the view.
+ * All of DAO's functions are static because it avoid to create an object for using method.
+ * 
+ * @since Job Offer 1.0
+ * @version 1.0
  */
 class DAO {    
     /**
      * This function return the SELECT request. 
-     * So, if you return all elements on the table, don't passed on arguments 
-     * on is function, else, gieve a good value at $id for see one result.
+     * So, if you return all elements on the table, don't passed any argument 
+     * on is function.
+     * Otherwise, if you would return an specific offer, return only one offer.
      * 
-     * @access public
+     * @since Job Offer 1.0
      * @global object $wpdb
-     *  Global Object present on WrodPress Core.
+     *  It's a represent of the Database access create by WordPress.
      * @param int $id
      *  The id of the potential return value.
      * @return array
@@ -33,18 +40,18 @@ class DAO {
     }
     
     /**
-     * This function execute an insert request on the Database.
+     * This function execute an INSERT request on the Database.
      * Insert in the database the Offer passed on parameter.
      * This function return the result of the sql query.
      * True if the request is successful, then return false.
      * 
-     * @access public
+     * @since Job Offer 1.0
      * @global object $wpdb
-     *  Global Object present on WrodPress Core.
+     *  It's a represent of the Database access create by WordPress.
      * @param Offer $offer
-     *  New Offer at add on Database.
+     *  New Offer to add on Database.
      * @return bool
-     *  True if the request is successful, then false.
+     *  The state of the request.
      */
     public static function insert(Offer $offer) {
         global $wpdb;
@@ -76,17 +83,18 @@ class DAO {
     }
     
     /**
-     * This function update on entry in the Database.
+     * This function UPDATE on entry in the Database.
      * For that, it using the Offer for research and update the good entry from the Database.
      * This function return the result of the sql query.
      * True if the request is successful, then return false.
      * 
-     * @access public
+     * @since Job Offer 1.0
      * @global object $wpdb
-     *  Global Object present on WrodPress Core.
+     *  It's a represent of the Database access create by WordPress.
      * @param Offer $offer
+     *  The new content of the offer.
      * @return bool
-     *  True if the request is successful, then false.
+     *  The state of the request.
      */
     public static function update(Offer $offer) {
         global $wpdb;
@@ -117,18 +125,18 @@ class DAO {
     }
     
     /**
-     * This function delete on entry in the Database.
+     * This function DELETE on entry in the Database.
      * It using the id passed on parameter for remove the good entry from the Database.
      * This function return the result of the sql query.
      * True if the request is successful, then return false.
      * 
-     * @access public
+     * @since Job Offer 1.0
      * @global object $wpdb
-     *  Global Object present on WordPress Core.
+     *  It's a represent of the Database access create by WordPress.
      * @param integer $id
      *  Id of offer who deleted.
      * @return bool
-     *  True if the request is successful, then false.
+     *  The state of the request.
      */
     public static function delete($id) {
         global $wpdb;
@@ -146,9 +154,11 @@ class DAO {
     }
     
     /**
-     * Return the MAX(id) present on database.
+     * Return the last id present on database.
+     * 
+     * @since Job Offer 1.0
      * @global object $wpdb
-     *  Global Object present on WordPress core.
+     *  It's a represent of the Database access create by WordPress.
      */
     public static function get_max_id() {
         global $wpdb;

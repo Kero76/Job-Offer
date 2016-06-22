@@ -1,42 +1,76 @@
 <?php
 /*
- * Plugin Name: Job Offer
- * Plugin URI: 
- * Description: This plugin is used for create job or traineership offer for your website.
- * Version: 0.1
- * Author: Nicolas GILLE
- * Author URI:
- * Licence: GPL2+ or later
- * Licence URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Domain Path: /languages
- * Text Domain: job-offer
+Plugin Name: Job Offer
+Plugin URI: 
+Description: This plugin is used for create job or traineership offer for your website.
+Version: 1.0
+Author: Nicolas GILLE
+Author URI:
+Licence: GPLv2+ or later
+Licence URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: job-offer
+Domain Path: /languages/
+
+Job Offer is a WordPress plugin for added job or traineeship offer in your website.
+Copyright (C) 2016 Nicolas GILLE<nic.gille@gmail.com>
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
  */
 
-/*
- * This is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * any later version.
- * This is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see https://www.gnu.org/licenses/gpl-2.0.html.
+/**
+ * Includes EnumType class.
  */
-
-require_once('classes/Offer.class.php');
 require_once('classes/EnumType.class.php');
+
+/**
+ * Includes Enum class.
+ */
 require_once('classes/Enum.class.php');
+
+/**
+ * Includes DAO class for interact with Database.
+ */
 require_once('classes/DAO.class.php');
 
+/**
+ * Includes Offer class for interact with DAO object..
+ */
+require_once('classes/Offer.class.php');
+
 if (!class_exists('JobOffer')) {
+    
+    /**
+     * Main class of plugin.
+     * 
+     * This class is the main class of plugin. 
+     * In fact, she centralize all functions which enable to run the plugin. 
+     * 
+     * @since Job Offer 1.0.0
+     * @author Nicolas GILLE
+     * @version 1.0
+     */
     class JobOffer {
         
         /**
-         * This constructor is used for adding action when create by application.
+         * Constructor used for initialized plugin functions.
          * 
-         * @access public
+         * This constructor is used for adding action when create by application.
+         * In fact, he add all necessary actions to make it usable application.
+         * 
+         * @since Job Offer 1.0
          */
         public function __construct() {
             if (function_exists('add_action')) {
@@ -44,8 +78,7 @@ if (!class_exists('JobOffer')) {
                 add_action('load-' . $page, array($this, 'register_stylesheet'));
                 add_action('admin_enqueue_scripts', array($this, 'register_stylesheet'));
                 add_action('admin_enqueue_scripts', array($this, 'register_scripts'));
-                add_action('init', array($this, 'load_textdomain'));
-                //add_action('init', array($this, 'createPost'));
+                add_action('plugins_loaded', array($this, 'load_textdomain'));
             }
             if (function_exists('add_shortcode')) {
                 add_shortcode('jo_jobs', array($this, 'shortcode_all_offers'));
@@ -54,9 +87,11 @@ if (!class_exists('JobOffer')) {
         }
         
         /**
-         * This function initialize Job Offer plugin.
+         * Create a link in sub menu settings in dahsboard.
          * 
-         * @access public
+         * These options appear under settings menu because plugin not used everyday (convention from WordPress).
+         * 
+         * @since Job Offer 1.0
          */
         public function init() {
             if (function_exists('add_options_page')) {
@@ -69,12 +104,14 @@ if (!class_exists('JobOffer')) {
         }
         
         /**
-         * Function called when you activate the plugin.
-         * When your activate this plugin, you create a new table in database using by the plugin.
+         * Install the plugin in WordPress.
          * 
-         * @access public
+         * When your activate this plugin, this function create new table in database.
+         * This table is used for stored all data from the offers.
+         * 
+         * @since Job Offer 1.0
          * @global object $wpdb
-         *  Global Object present on WrodPress Core.
+         *  It's a represent of the Database access create by WordPress.
          */
         public function install() {
             global $wpdb;
@@ -92,10 +129,13 @@ if (!class_exists('JobOffer')) {
         }
         
         /**
+         * Initialize template for interact with database.
+         * 
          * This function allows to apply the functions of addition, deletion or modification
          * of various offers used by the admin part.
+         * In fact, she redirige the admin from the good form page.
          * 
-         * @access public
+         * @since Job Offer 1.0
          */
         public function create_form_page() {
             switch($_GET['p']) {
@@ -127,9 +167,9 @@ if (!class_exists('JobOffer')) {
                         $enum = new Enum();
                         $offerType = $enum->get_enum()[$_POST['jo_type']];
                         $data = array(
-                            'id' => $id,
-                            'title' => $_POST['jo_title'],
-                            'content' => $_POST['jo_content'],
+                            'id' => intval($id),
+                            'title' => sanitize_text_field($_POST['jo_title']),
+                            'content' => sanitize_text_field($_POST['jo_content']),
                             'type' => $offerType,
                         );
                         $offer = new Offer($data);
@@ -147,9 +187,9 @@ if (!class_exists('JobOffer')) {
                         $enum = new Enum();
                         $offerType = $enum->get_enum()[$_POST['jo_type']];
                         $data = array(
-                            'id' => $_POST['jo_id'],
-                            'title' => $_POST['jo_title'],
-                            'content' => $_POST['jo_content'],
+                            'id' => intval($_POST['jo_id']),
+                            'title' => sanitize_text_field($_POST['jo_title']),
+                            'content' => sanitize_text_field($_POST['jo_content']),
                             'type' => $offerType,
                         );
                         $offer = new Offer($data);
@@ -174,26 +214,41 @@ if (!class_exists('JobOffer')) {
                 
                 /** DEFAULT SECTION **/
                 default :
-                    
                     break;
             }
             
-            if ($_GET['offer'] == 'addok') {
-                echo '<span class="job-offer-success job-offer-bold">' . __('Your offer was correctly inserted.', 'job-offer') . '</span>';
-            } else if ($_GET['offer'] == 'deleteok') {
-                echo '<span class="job-offer-success job-offer-bold">' . __('Your offer was correctly deleted.', 'job-offer') . '</span>';
-            } else if ($_GET['offer'] == 'updateOffer') {
-                echo '<span class="job-offer-success job-offer-bold">' . __('Your offer was correctly updated.', 'job-offer') . '</span>';
+            /** MESSAGE SUCCESSFUL SECTION **/
+            if (isset($_GET['offer'])) {
+                switch ($_GET['offer']) {
+                    case 'addok' :
+                        echo '<span class="job-offer-success job-offer-bold">' . __('Your offer was correctly inserted.', 'job-offer') . '</span>';
+                        break;
+                    
+                    case 'deleteok' :
+                        echo '<span class="job-offer-success job-offer-bold">' . __('Your offer was correctly deleted.', 'job-offer') . '</span>';
+                        break;
+                    
+                    case 'updateok' : 
+                        echo '<span class="job-offer-success job-offer-bold">' . __('Your offer was correctly updated.', 'job-offer') . '</span>';
+                        break;
+                    
+                    default :
+                        break;
+                }
             }
        }
        
-       /**
-        * This function return all offers present in Database.
-        * 
-        * @access public
-        * @return array
-        *   An array who composed by Offer Object.
-        */
+        /**
+         * Return all offers from Database.
+         * 
+         * This function return all offers present in Database.
+         * When it create the array, create a new Offer object for each entry.
+         * Then, return the array with all Offers presents in Database.
+         * 
+         * @since Job Offer 1.0
+         * @return array
+         *   An array who composed by Offer Object.
+         */
         public function get_offers() {
             $offers = DAO::query();
             $enum = new Enum();
@@ -211,14 +266,16 @@ if (!class_exists('JobOffer')) {
         }
         
         /**
-         * This function return a single Offer object from the database.
-         * Using the id for return the good entry.
+         * Return on offer frome Database.
          * 
-         * @access public
+         * This function return a single Offer object from the database.
+         * Using the id for return the good entry, generated Offer object and return it.
+         * 
+         * @since Job Offer 1.0
          * @param integer $id
-         *  The id of offer.
+         *  The id of offer which search.
          * @return object
-         *  A single Offer.
+         *  A hydrate object with the data retrieved from the database.
          */
         public function get_offer($id) {
             $offer = DAO::query($id);
@@ -234,131 +291,115 @@ if (!class_exists('JobOffer')) {
         }
 
         /**
-         * This function register and enqueue plugin stylesheet.
+         * Register and enqueue stylesheet files.
          * 
-         * @access public
+         * This function register and enqueue plugin stylesheet.
+         * It used for activate custom css from plugin.
+         * 
+         * @since Job Offer 1.0
          */
         public function register_stylesheet() {
-            wp_register_style('job-offer-style', plugins_url('css/job-offer-style.css', __FILE__));
-            wp_enqueue_style('job-offer-style');
+            if (function_exists('wp_register_style') && function_exists('wp_enqueue_style')) {
+                wp_register_style('job-offer-style', plugins_url('css/job-offer-style.css', __FILE__));
+                wp_enqueue_style('job-offer-style');
+            }
         }
         
         /**
-         * This function register and enqueue plugin script.
+         * Register and enqueue script files.
          * 
-         * @access public
+         * This function register and enqueue plugin script.
+         * It used for activate custom javascript from plugin.
+         * 
+         * @since Job Offer 1.0
          */
         public function register_scripts() {
-            wp_register_script('job-offer-admin-script', plugins_url('js/admin.js', __FILE__), 'jquery', '1.0');
-            wp_enqueue_script('jquery');
-            wp_enqueue_script('job-offer-admin-script');
+            if (function_exists('wp_register_script') && function_exists('wp_enqueue_script')) {
+                wp_register_script('job-offer-admin-script', plugins_url('js/admin.js', __FILE__), 'jquery', '1.0');
+                wp_enqueue_script('jquery');
+                wp_enqueue_script('job-offer-admin-script');
+            }
         }
         
         /**
-         * This function load textdomain for add translations.
+         * Loaded textdomain for translations.
          * 
-         * @access public
+         * This function load textdomain for add translations.
+         * It used for activate plugin internationalization.
+         * 
+         * @since Job Offer 1.0
          */
         public function load_textdomain() {
-            load_plugin_textdomain('job-offer', plugins_url() . '/languages');
+            if (function_exists('load_plugin_textdomain')) {
+                load_plugin_textdomain('job-offer', false, dirname(plugin_basename(__FILE__)) . '/languages');
+            }
         }
         
        /**
-        * This function create used in posts 
-        * or pages for see all Offers posted.
+        * Return all offers.
         * 
-        * @access public
+        * This function is used for displaying all offers present 
+        * in database.
+        * It used for generate a shortcode who placed on post page.
+        * 
+         * @since Job Offer 1.0
         */
        public function shortcode_all_offers() {
-            if (isset($_GET['id'])) {
-                $this->shortcode_offer($_GET['id']);
-            } else {
-                $str = '<table>';
-                $str .= '<tr>';
-                $str .= '<th>Type of offers</th>';
-                $str .= '<th>Title</th>';
-                $str .= '</tr>';
+            $str = '<table>';
+            $str .= '<tr>';
+            $str .= '<th>Type of offers</th>';
+            $str .= '<th>Title</th>';
+            $str .= '</tr>';
 
-                $offers = $this->get_offers();
-                foreach($offers as $offer) {
-                     $str .= '<tr>';
-                     $str .= '<td class="' . str_replace(' ', '_', strtolower($offer->get_type()->get_key())) . '">' . $offer->get_type()->get_key() . '</td>';
-                     $str .= '<td><a class="job-offer-link" href="' . '&amp;id=' . $offer->get_id() . '">' . $offer->get_title() . '</a></td>';
-                     $str .= '</tr>';
-                }
-                $str .= '</table>';
-                return $str;
+            $offers = $this->get_offers();
+            foreach($offers as $offer) {
+                 $str .= '<tr>';
+                 $str .= '<td class="' . str_replace(' ', '_', strtolower($offer->get_type()->get_key())) . '">' . $offer->get_type()->get_key() . '</td>';
+                 $str .= '<td><a class="job-offer-link" href="' . '&amp;id=' . $offer->get_id() . '">' . stripslashes($offer->get_title()) . '</a></td>';
+                 $str .= '</tr>';
             }
-       }
-       /**
-        * This function create a shortcode used for see only the information about 1 offer.
-        * 
-        * @access public
-        * @param integer $id
-        *   Identifiant of the offer.
-        * @return string
-        *   The content of the page.
-        */
-       public function shortcode_offer($id) {
-           if ($id >= 0)
-                $offer = $this->getOffer($id['id']);
-           $str = '<h2>' . $offer->getTitle() . '</h2>';
-           $str .= '<p>' . $offer->getContent() . '</p>';
-           return $str;
+            $str .= '</table>';
+            return $str;            
        }
        
-       /**
-        * This function create a new type of posts.
-        */
-       /*public function createPost() {
-            $labels = array(
-                'name'               => 'Offers', 'post type general name', 'your-plugin-textdomain',
-                'singular_name'      => 'Offer', 'post type singular name', 'your-plugin-textdomain',
-                'menu_name'          => 'Offers', 'admin menu', 'your-plugin-textdomain',
-                'name_admin_bar'     => 'Offer', 'add new on admin bar', 'your-plugin-textdomain',
-                'add_new'            => 'Add New', 'offer', 'your-plugin-textdomain',
-                'add_new_item'       => 'Add New Offer', 'your-plugin-textdomain',
-                'new_item'           => 'New Offer', 'your-plugin-textdomain',
-                'edit_item'          => 'Edit Offer', 'your-plugin-textdomain', 
-                'view_item'          => 'View Offer', 'your-plugin-textdomain', 
-                'all_items'          => 'All Offers', 'your-plugin-textdomain',
-                'search_items'       => 'Search Offers', 'your-plugin-textdomain',
-                'parent_item_colon'  => 'Parent Offers:', 'your-plugin-textdomain',
-                'not_found'          => 'No offers found.', 'your-plugin-textdomain',
-                'not_found_in_trash' => 'No offers found in Trash.', 'your-plugin-textdomain',
-            );
-
-            $args = array(
-                'labels'             => $labels,
-                'description'        =>  'Description.', 'your-plugin-textdomain',
-                'public'             => true,
-                'publicly_queryable' => true,
-                'show_ui'            => true,
-                'show_in_menu'       => true,
-                'query_var'          => true,
-                'rewrite'            => array('slug' => 'offer'),
-                'capability_type'    => 'post',
-                'has_archive'        => true,
-                'hierarchical'       => false,
-                'menu_position'      => null,
-                'supports'           => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments' ),
-                'menu_icon'          => 'dashicons-businessman',
-            );
-            register_post_type('offer', $args);
-       }*/
+        /**
+         * Return one offer from Database.
+         * 
+         * This function is used for displaying 1 offer.
+         * It used for create a shortcode used for see description from 1 offer.
+         * 
+         * @since Job Offer 1.0
+         * @param integer $id
+         *   Identifiant of the offer.
+         * @return string
+         *   The content of the page used on a post page.
+         */
+       public function shortcode_offer($id) {
+           if ($id >= 0) {
+                $offer = $this->get_offer($id['id']);
+                $str = '<h2>' . stripslashes($offer->get_title()) . '</h2>';
+                $str .= '<p>' . stripslashes($offer->get_content()) . '</p>';
+           } else {
+               $str = '<p>' . __('No offers founds') . '</p>';
+           }
+           return $str;
+       }
     }
 }
 
 /*
- * Creation of an instance of JobOffer object if class not exists in wordpress or other plugin core.
+ * Creation of an instance of JobOffer object 
+ * if class not exists in WordPress core or other plugin.
+ * @since Job Offer 1.0
  */
 if (class_exists('JobOffer')) {
     $jobOffer = new JobOffer();
 }
 
 /*
- * If variable not empty, so, we register activation and deactivation hook
+ * If variable not empty, so, we register activation 
  * and add an action for see the option menu of this plugin.
+ * @since Job Offer 1.0
  */
 if (isset($jobOffer)) {
     register_activation_hook(__FILE__, array($jobOffer, 'install'));

@@ -8,10 +8,11 @@
  * 
  * @param {object} document
  *  The object represent the page.
+ * @since Job Offer 1.0
  */
 jQuery(document).ready(function() {
     var lastIndex = 0;
-    jQuery('#view-table tr').each(function() {
+    jQuery('#job-offer-view-table tr').each(function() {
         lastIndex++;
     });
     
