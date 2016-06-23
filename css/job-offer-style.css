@@ -6,11 +6,11 @@
     font-weight: bold;
 }
 
-.job-offer-view-table {
+#job-offer-view-table {
     border-collapse: collapse;
 }
 
-th, tr {
+#job-offer-view-table tr {
     border-top: 1px solid black;
 }
 

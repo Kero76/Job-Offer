@@ -9,8 +9,8 @@
  *  - Type : Sort of offer like Traineeship, Fill-Time, Permanent Position, ...
  * When you work with an offer, you used only an Offer object for manipulate data about an offer.
  * 
- * @since Job Offer 1.0
- * @version 1.0
+ * @since Job Offer 1.0.0
+ * @version 1.0.0
  */
 class Offer {
     
@@ -18,7 +18,6 @@ class Offer {
      * Unique id of the offer. It used when 2 offers have the same names 
      * and the same caracteristics.
      * 
-     * @since Job Offer 1.0
      * @access private
      * @var integer
      *  Unique id of the offer.
@@ -28,7 +27,6 @@ class Offer {
     /**
      * Title of the Offer.
      * 
-     * @since Job Offer 1.0
      * @access private
      * @var string
      *  Title of the offer. 
@@ -38,7 +36,6 @@ class Offer {
     /**
      * Content of the Offer
      * 
-     * @since Job Offer 1.0
      * @access private
      * @var string 
      *  Content of the offer.
@@ -48,7 +45,6 @@ class Offer {
     /**
      * Type of offer.
      * 
-     * @since Job Offer 1.0
      * @access private
      * @var EnumType 
      *  Type of offer.
@@ -61,7 +57,6 @@ class Offer {
      * It using hydrate function for created directly my Object,
      * without calling all setters functions.
      * 
-     * @since Job Offer 1.0
      * @param mixed $data
      *  Data received from the database.
      */
@@ -74,7 +69,6 @@ class Offer {
      * 
      * Function used for see the details about an Offer.
      * 
-     * @since Job Offer 1.0
      * @return string
      *  The current state of the offer.
      */
@@ -94,7 +88,6 @@ class Offer {
     /**
      * Return id.
      * 
-     * @since Job Offer 1.0
      * @return int 
      *  Unique identifiant of the offer.
      */
@@ -105,7 +98,6 @@ class Offer {
     /**
      * Return title.
      * 
-     * @since Job Offer 1.0
      * @return string
      *  Return the title of the offer.
      */
@@ -116,7 +108,6 @@ class Offer {
     /**
      * Return content.
      * 
-     * @since Job Offer 1.0
      * @return string 
      *  Return the content of the offer.
      */
@@ -130,7 +121,6 @@ class Offer {
      * EnumType object represent the type of offer. 
      * For example, we can return traineeship, full-time, ...
      * 
-     * @since Job Offer 1.0
      * @return EnumType
      *  Return an Object EnumType.
      */
@@ -142,7 +132,6 @@ class Offer {
      * Set id of current offer.
      * Replace the current id by new id, or asign the value from the Database.
      * 
-     * @since Job Offer 1.0
      * @param int $id
      *  Value of id.
      */
@@ -154,7 +143,6 @@ class Offer {
      * Set title of current offer.
      * Replace the current title by new title, or asign the value from the Database.
      * 
-     * @since Job Offer 1.0
      * @param string $title
      *  Value of title.
      */
@@ -166,7 +154,6 @@ class Offer {
      * Set content of current offer.
      * Replace the current content by new cpntent, or asign the value from the Database.
      * 
-     * @since Job Offer 1.0
      * @param string $content
      *  Value of content.
      */
@@ -180,7 +167,6 @@ class Offer {
      * We verify in the first step if the type passed on parameter is a EnumTYpe.
      * If the parameter isn't a EnumTYpe, the type isn't modify.
      * 
-     * @since Job Offer 1.0
      * @param EnumType $type
      *  Type of offer.
      */
@@ -194,7 +180,6 @@ class Offer {
      * For hydrate on object, call hydrate function on __construct 
      * and your object will be create directly without calling all setters functions.
      * 
-     * @since Job Offer 1.0
      * @access private
      * @param array $data
      *  Data received from the database.

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: job-offer\n"
-"POT-Creation-Date: 2016-06-22 16:23+0200\n"
-"PO-Revision-Date: 2016-06-22 16:26+0200\n"
+"POT-Creation-Date: 2016-06-23 15:52+0200\n"
+"PO-Revision-Date: 2016-06-23 15:55+0200\n"
 "Last-Translator: \n"
 "Language-Team: Nicolas GILLE <nic.gille@gmail.com>\n"
 "Language: fr_FR\n"
@@ -16,52 +16,70 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: classes/Enum.class.php:133
+#: classes/Enum.class.php:166
 msgid "Permanent position"
 msgstr "CDD"
 
-#: classes/Enum.class.php:134
+#: classes/Enum.class.php:167
 msgid "Temporary position"
 msgstr "CDI"
 
-#: classes/Enum.class.php:135
+#: classes/Enum.class.php:168
 msgid "Full-time"
 msgstr "Temps plein"
 
-#: classes/Enum.class.php:136
+#: classes/Enum.class.php:169
 msgid "Traineeship"
 msgstr "Stage"
 
-#: classes/Form.class.php:110
-msgid "Save the Offer"
-msgstr "Enregistrer l'offre"
+#: classes/Enum.class.php:170
+msgid "Alternation"
+msgstr "Alternance"
 
-#: job-offer.php:175 job-offer.php:195 job-offer.php:206
+#: classes/Form.class.php:106
+msgid "Save the Offer"
+msgstr "Enregistrer l&#039;offre"
+
+#: job-offer.php:182 job-offer.php:202 job-offer.php:213
 msgid "An error occured, please contact a developper for fix it."
 msgstr ""
 "Une erreur interne est survenue, merci de contacter le développeur pour "
 "corriger ça."
 
-#: job-offer.php:220
+#: job-offer.php:227
 msgid "Your offer was correctly inserted."
-msgstr "Votre offre à bien été ajouté."
+msgstr "Votre offre a bien &eacute;t&eacute; ajout&eacute;e."
 
-#: job-offer.php:224
+#: job-offer.php:231
 msgid "Your offer was correctly deleted."
-msgstr "Votre offre à bien été supprimé."
+msgstr "Votre offre a bien &eacute;t&eacute; supprim&eacute;e."
 
-#: job-offer.php:228
+#: job-offer.php:235
 msgid "Your offer was correctly updated."
-msgstr "Votre offre a bien été mis à jour."
+msgstr "Votre offre a bien &eacute;t&eacute; mise à jour."
 
-#: job-offer.php:379
+#: job-offer.php:321
+msgid "Title is empty."
+msgstr "Le champ Titre est vide."
+
+#: job-offer.php:322
+msgid "Content is empty."
+msgstr "Le champ Contenu est vide."
+
+#: job-offer.php:323
+msgid "Really want to delete this offer ? (This action is irreversible)"
+msgstr ""
+"Voulez vous vraiment supprimer cette offre ? (Cette action est irr&eacute;"
+"versible)"
+
+#: job-offer.php:383
 msgid "No offers founds"
-msgstr "Aucune offre n'a été trouvé."
+msgstr "Aucune offre n&#039;a &eacute;t&eacute; trouv&eacute;e."
 
 #: template-add-offer-admin-page.php:13 template-update-offer-admin-page.php:17
 #: template-view-offer-admin-page.php:6
 msgid "Job Offer"
-msgstr "Offre d'emploi"
+msgstr "Offre d&#039;emploi"
 
 #: template-add-offer-admin-page.php:17
 msgid "Add a new Offer"
@@ -71,11 +89,11 @@ msgstr "Ajouter une nouvelle offre"
 msgid "Title"
 msgstr "Titre"
 
-#: template-add-offer-admin-page.php:26 template-update-offer-admin-page.php:30
+#: template-add-offer-admin-page.php:29 template-update-offer-admin-page.php:30
 msgid "Content"
 msgstr "Contenu"
 
-#: template-add-offer-admin-page.php:31 template-update-offer-admin-page.php:35
+#: template-add-offer-admin-page.php:37 template-update-offer-admin-page.php:35
 msgid "Type"
 msgstr "Type"
 
@@ -92,33 +110,43 @@ msgid "Add new offer"
 msgstr "Ajouter une nouvelle offre"
 
 #: template-view-offer-admin-page.php:14
+msgid "No offers were found."
+msgstr "Aucune offre n'a &eacute;t&eacute; trouv&eacute;e."
+
+#: template-view-offer-admin-page.php:19
 msgid "Id of offer"
 msgstr "Identifiant de l'offre"
 
-#: template-view-offer-admin-page.php:15
+#: template-view-offer-admin-page.php:20
 msgid "Type of offer"
-msgstr "Type de l'offre"
+msgstr "Type de l&#039;offre"
 
-#: template-view-offer-admin-page.php:16
+#: template-view-offer-admin-page.php:21
 msgid "Title of offer"
-msgstr "Titre de l'offre"
+msgstr "Titre de l&#039;offre"
 
-#: template-view-offer-admin-page.php:17
+#: template-view-offer-admin-page.php:22
 msgid "Update offer"
 msgstr "Modifier une offre"
 
-#: template-view-offer-admin-page.php:18
+#: template-view-offer-admin-page.php:23
 msgid "Delete offer"
 msgstr "Supprimer une offre"
 
-#: template-view-offer-admin-page.php:19
+#: template-view-offer-admin-page.php:24
 msgid "Shortcode"
 msgstr "Shortcode"
 
-#: template-view-offer-admin-page.php:26
+#: template-view-offer-admin-page.php:32
 msgid "Update"
-msgstr "Mettre à jour"
+msgstr "Mettre &agrave; jour"
 
-#: template-view-offer-admin-page.php:27
+#: template-view-offer-admin-page.php:33
 msgid "Delete"
 msgstr "Suppression"
+
+#~ msgid "Title is empty"
+#~ msgstr "Le champ Titre est vide."
+
+#~ msgid "Content is empty"
+#~ msgstr "Le champ Contenu est vide."

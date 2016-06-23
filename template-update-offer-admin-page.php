@@ -4,7 +4,7 @@
     require_once('classes/Offer.class.php');
     
     $form = new Form();
-    $enum = new Enum();
+    $enum = Enum::get_instance();
     
     if (!isset($_GET['id]'])) 
         $offer = $this->get_offer($_GET['id']);
@@ -41,7 +41,6 @@
                 <td><?php echo $form->get_submit_button_form(); ?></td>
             </tr>            
         </table>
-        
     </form>
 </div>
 

@@ -13,15 +13,32 @@ require_once('EnumType.class.php');
  * In fact, if you add a new type in the middle of the array, the potential id present in database 
  * are potentially modifed and taht create possible bugs.
  * 
- * @since Job Offer 1.0
- * @version 1.0
+ * The Enum class implements the Pattern Singleton, because, in is plugin, only one instance of Enum is enough.
+ * Or in theory, it can create two differents instance of Enum and work with 2 Enum.
+ * But it's not possible because the Enum govern the good working of Job Offer.
+ * So, with a singleton pattern, we can be more assured that our object is constant during all process of the plugin.
+ * 
+ * @since Job Offer 1.0.1 
+ *  -> Added Alternation on Enum.
+ *  -> Implements Design Pattern Singleton.
+ * @since Job Offer 1.0.0
+ * @version 1.0.0
  */
 class Enum {
     
     /**
+     * This is the only representation of the Object Enum.
+     * 
+     * @access private
+     * @static
+     * @var object
+     *  Represent this.
+     */
+    private static $_instance = null;
+    
+    /**
      * This is an array who contains all element present in enumeration.
      * 
-     * @since Job Offer 1.0
      * @access private
      * @var array 
      *  Array which contains all enumerators elements.
@@ -32,18 +49,36 @@ class Enum {
      * Constructor of Enum object.
      * This is a constructor for initialize enumeration.
      * 
-     * @since Job Offer 1.0
+     * @access private
      */
-    public function __construct() {
+    private function __construct() {
         $this->_enum = array();
         $this->_init_enum();
+    }
+    
+    /**
+     * Return an instance of Enum.
+     * 
+     * The object Enum implements the pattern singleton.
+     * So, it necessary to return the only one instance of Enum.
+     * For that, using this function which create the object if is not called before
+     * or return the only one instance of our Enum object.
+     * 
+     * @static
+     * @return object 
+     *  The only one instance of Enum.
+     */
+    public static function get_instance() {
+        if (is_null(self::$_instance)) {
+            self::$_instance = new Enum();
+        } 
+        return self::$_instance;
     }
     
     /**
      * Added new element at the end of the enum.
      * It verify in the first time if the key is not present in the enum before added it.
      * 
-     * @since Job Offer 1.0
      * @param EnumType $element
      *  Element to add at the queue of the enum.
      */
@@ -60,7 +95,6 @@ class Enum {
      * So for that, and because the enumeration order don't change,
      * we can store directly the id.
      * 
-     * @since Job Offer 1.0
      * @param string $key
      *  The key who search in the enum.
      * @return integer
@@ -83,7 +117,6 @@ class Enum {
      * we recover an int who represent the id in enum. 
      * So, you use this function for convert this data into a key string, and create object thanks that.
      * 
-     * @since Job Offer 1.0
      * @param int $id
      *  Rank of the current element enum.
      * @return string
@@ -100,7 +133,6 @@ class Enum {
      * Verify if the key passed on parameter exists.
      * This function allow to verify if the current key is present or not in the enum.
      * 
-     * @since Job Offer 1.0
      * @param string $key
      *  The key search in enum.
      * @return bool
@@ -113,7 +145,6 @@ class Enum {
     /**
      * This function return the enumerator.
      * 
-     * @since Job Offer 1.0
      * @return array
      *  Return the enum.
      */
@@ -128,7 +159,6 @@ class Enum {
      *  Don't modify the current order of enum.
      * If you modify this, check beforehand that the SQL table is empty.
      * 
-     * @since Job Offer 1.0
      * @access private
      */
     private function _init_enum() {
@@ -137,6 +167,7 @@ class Enum {
           __('Temporary position', 'job-offer'), // CDI
           __('Full-time', 'job-offer'),          // Temps plein
           __('Traineeship', 'job-offer'),        // Stage
+          __('Alternation', 'job-offer'),        // Alternance
         );      
         
         for ($i = 0; $i < count($data); $i++) {
