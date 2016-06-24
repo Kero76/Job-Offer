@@ -8,7 +8,7 @@ require_once('EnumType.class.php');
 /**
  * This class represent an enumeration.
  * This enumeration represent the different type present in Offer.
- * For add new element in is enumeration, modified the function _init_enum()
+ * For add new element in is enumeration, modified the method _init_enum()
  * and add new element at the end of the array if you have create previously an offer.
  * In fact, if you add a new type in the middle of the array, the potential id present in database 
  * are potentially modifed and taht create possible bugs.
@@ -61,7 +61,7 @@ class Enum {
      * 
      * The object Enum implements the pattern singleton.
      * So, it necessary to return the only one instance of Enum.
-     * For that, using this function which create the object if is not called before
+     * For that, using this method which create the object if is not called before
      * or return the only one instance of our Enum object.
      * 
      * @static
@@ -89,8 +89,8 @@ class Enum {
     
     /**
      * Return the id in enum thanks to an key.
-     * If the key doesn't exists, the function return -1.
-     * This function is used mainly because, when we send the data in database, 
+     * If the key doesn't exists, the method return -1.
+     * This method is used mainly because, when we send the data in database, 
      * we store only the id of the enum and not the value of enum.
      * So for that, and because the enumeration order don't change,
      * we can store directly the id.
@@ -112,10 +112,10 @@ class Enum {
     /**
      * Return an Offer thanks to the rank in the enum.
      * If the id is greater than the size of enum or is negative, 
-     * the function return -1.
-     * This function is used mainly because, when we recover the value of the type in Database,
+     * the method return -1.
+     * This method is used mainly because, when we recover the value of the type in Database,
      * we recover an int who represent the id in enum. 
-     * So, you use this function for convert this data into a key string, and create object thanks that.
+     * So, you use this method for convert this data into a key string, and create object thanks that.
      * 
      * @param int $id
      *  Rank of the current element enum.
@@ -131,7 +131,7 @@ class Enum {
     
     /**
      * Verify if the key passed on parameter exists.
-     * This function allow to verify if the current key is present or not in the enum.
+     * This method allow to verify if the current key is present or not in the enum.
      * 
      * @param string $key
      *  The key search in enum.
@@ -143,7 +143,7 @@ class Enum {
     }
     
     /**
-     * This function return the enumerator.
+     * This method return the enumerator.
      * 
      * @return array
      *  Return the enum.
@@ -153,7 +153,7 @@ class Enum {
     }
     
     /**
-     * This function initialize the enum value with an array who composed
+     * This method initialize the enum value with an array who composed
      * by all possible key present in is enum.
      * Warning /!\ 
      *  Don't modify the current order of enum.

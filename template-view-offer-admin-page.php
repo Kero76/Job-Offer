@@ -8,7 +8,10 @@
 
 <div>
     <h3 class="job-offer-title"><?php _e('Views all offers', 'job-offer'); ?></h3>
-    <p><a href="?page=job-offer/job-offer.php&p=insert"><button class="button button-primary" ><?php _e('Add new offer', 'job-offer'); ?></button></a></p>
+    <p>
+        <a href="?page=job-offer/job-offer.php&p=insert"><button class="button button-primary" ><?php _e('Add new offer', 'job-offer'); ?></button></a>
+        <a href="?page=job-offer/job-offer.php"><button class="button button-primary job-offer-refresh-btn" ><?php _e('Refresh page', 'job-offer'); ?></button></a>
+    </p>
     <?php 
         if (count($offers) === 0) {
             echo '<p>' . _e('No offers were found.', 'job-offer') . '</p>';

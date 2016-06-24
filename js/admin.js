@@ -12,7 +12,7 @@
  * This function is loaded when the webpage is loaded.
  * In fact, it represent the event onload on javascript.
  * 
- * @param {object} document
+ * @param object document
  *  The object represent the page.
  */
 jQuery(document).ready(function() {
@@ -66,5 +66,21 @@ jQuery(document).ready(function() {
         if (!confirm('Really want to delete this offer ? (This action is irreversible)')) {
             event.preventDefault();
         }
+    });
+    
+    /**
+     * Reload potentially the current page if some parameters are present in URL.
+     * 
+     * This function parse current page URL and if find parameters 'addoffer', 'deleteoffer' or 'updateoffer'
+     * is present, and if it's the case, so it relaod the page for update new entry present on Database.
+     * 
+     * @param object window
+     *  The object represent the window.
+     */
+    
+    jQuery('.job-offer-refresh-btn').click(function() {
+        jQuery(window).load(function() {
+            location.reload(true);
+        });
     });
 });

@@ -13,10 +13,12 @@ require_once('Enum.class.php');
  * @since Job Offer 1.0.1
  *  -> Implements Design Pattern Singleton.
  *  -> Replace $enum = new Enum() by $enum = Enum::get_instance()
+ *  -> Added ORDER BY id ASC into query method.
+ *  -> Creation, deletion and update wp_posts table for create post for each Offer from custom table.
  * @since Job Offer 1.0.0
  * @version 1.0.0
  */
-class DAO {    
+class DAO {
     
     /**
      * This is the only representation of the Object DAO.
@@ -55,9 +57,9 @@ class DAO {
     }
     
     /**
-     * This function return the SELECT request. 
+     * This method return the SELECT request. 
      * So, if you return all elements on the table, don't passed any argument 
-     * on is function.
+     * on is method.
      * Otherwise, if you would return an specific offer, return only one offer.
      * 
      * @global object $wpdb
@@ -71,7 +73,7 @@ class DAO {
         global $wpdb;
         $tableName = $wpdb->prefix . 'job_offer';
         if ($id == -1) {
-            $sql = 'SELECT * FROM ' . $tableName;
+            $sql = 'SELECT * FROM ' . $tableName . ' ORDER BY id ASC';
             return $wpdb->get_results($sql, ARRAY_A);   
         } else {
             $sql = 'SELECT * FROM ' . $tableName . ' WHERE id = ' . $id;
@@ -80,9 +82,9 @@ class DAO {
     }
     
     /**
-     * This function execute an INSERT request on the Database.
+     * This method execute an INSERT request on the Database.
      * Insert in the database the Offer passed on parameter.
-     * This function return the result of the sql query.
+     * This method return the result of the sql query.
      * True if the request is successful, otherwise return false.
      * 
      * @global object $wpdb
@@ -117,14 +119,31 @@ class DAO {
         if (!$sql) {
             return false;
         } else {
+            /**************************************/
+            /*        WORDPRESS DATABASE          */
+            /**************************************/
+            if (function_exists('get_current_user_id')) {
+                $id_user = get_current_user_id();
+            } else {
+                $id_user = 1;
+            }
+
+            $post = array(
+                'post_title'    => $offer->get_title(),
+                'post_content'  => $offer->get_content(),
+                //'post_name'     => delete ' ', char accentué, tolower
+               'post_status'   => 'publish',
+                'post_author'   => $id_user,            
+            );        
+            wp_insert_post($post);
             return true;
         }
     }
     
     /**
-     * This function UPDATE on entry in the Database.
+     * This method UPDATE on entry in the Database.
      * For that, it using the Offer for research and update the good entry from the Database.
-     * This function return the result of the sql query.
+     * This method return the result of the sql query.
      * True if the request is successful, otherwise return false.
      * 
      * @global object $wpdb
@@ -139,6 +158,8 @@ class DAO {
         $tableName = $wpdb->prefix . 'job_offer';
         $enum = Enum::get_instance();       
         $idType = $enum->get_id_by_key($offer->get_type()->get_key());        
+        
+        $oldData = $this->query($offer->get_id());
         
         $sql = $wpdb->update(
             $tableName,
@@ -156,16 +177,37 @@ class DAO {
             array('%d')
         );
         
-        if (!$sql) 
+        if (!$sql) {
             return false;
-        else
+        } else {
+            /**************************************/
+            /*        WORDPRESS DATABASE          */
+            /**************************************/
+            $tableName = $wpdb->prefix . 'posts';
+            $request = 'SELECT ID FROM `' . $tableName . '` WHERE `post_title` = "' . $oldData['title'] . '"';
+            $result = $wpdb->get_row($request, ARRAY_A);
+            
+            $wpdb->update(
+                $tableName,
+                array(
+                    'post_title' => $offer->get_title(),
+                    'post_content' => $offer->get_content(),
+                ),
+                array('ID' => $result['ID']),
+                array(
+                    '%s',
+                    '%s',
+                ),
+                array('%d')
+            );
             return true;
+        }
     }
     
     /**
-     * This function DELETE on entry in the Database.
+     * This method DELETE on entry in the Database.
      * It using the id passed on parameter for remove the good entry from the Database.
-     * This function return the result of the sql query.
+     * This method return the result of the sql query.
      * True if the request is successful, otherwise return false.
      * 
      * @global object $wpdb
@@ -178,16 +220,31 @@ class DAO {
     public function delete($id) {
         global $wpdb;
         $tableName = $wpdb->prefix . 'job_offer';
+        
+        $oldData = $this->query($id);
+        
         $sql = $wpdb->delete(
             $tableName, 
             array('id' => $id), 
             array('%d')
         );
         
-        if (!$sql) 
+        if (!$sql) {
             return false;
-        else
+        } else {
+            /**************************************/
+            /*        WORDPRESS DATABASE          */
+            /**************************************/            
+            $tableName = $wpdb->prefix . 'posts';
+            $request = 'SELECT ID FROM `' . $tableName . '` WHERE `post_title` = "' . $oldData['title'] . '"';
+            $result = $wpdb->get_row($request, ARRAY_A);
+            $wpdb->delete(
+                $tableName, 
+                array('ID' => $result['ID']), 
+                array('%d')
+            );
             return true;
+        }
     }
     
     /**

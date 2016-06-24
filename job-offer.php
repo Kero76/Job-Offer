@@ -3,7 +3,7 @@
 Plugin Name: Job Offer
 Plugin URI: 
 Description: This plugin is used for create job or traineership offer for your website.
-Version: 1.0.0
+Version: 1.0.1
 Author: Nicolas GILLE
 Author URI:
 Licence: GPLv2+ or later
@@ -56,25 +56,30 @@ if (!class_exists('JobOffer')) {
      * Main class of plugin.
      * 
      * This class is the main class of plugin. 
-     * In fact, she centralize all functions which enable to run the plugin. 
+     * In fact, she centralize all methods which enable to run the plugin. 
      * 
      * @since Job Offer 1.0.1
-     *  -> Replace $enum = new Enum() by $enum = Enum::get_instance()
+     *  -> Replace $enum = new Enum() by $enum = Enum::get_instance().
      *  -> Replace calling DAO's method static by a simple called method.
+     *  -> Creation of private method _create_offer($title, $content, $type).
+     *  -> Creation of private method _update_offer($id, $title, $content, $type).
+     *  -> Modify function shortcode_all_offers for generate a link for see all informations about offers.
      * @since Job Offer 1.0.0
-     * @version 1.0.0
+     * @version 1.0.1
      */
     class JobOffer {
         
         /**
-         *
+         * Object DAO representing link with Database.
+         * 
+         * @access private
          * @var object
          *  A DAO object for interact with Database. 
          */
         private $_dao;
         
         /**
-         * Constructor used for initialized plugin functions.
+         * Constructor used for initialized plugin methods.
          * 
          * This constructor is used for adding action when create by application.
          * In fact, he add all necessary actions to make it usable application.
@@ -112,7 +117,7 @@ if (!class_exists('JobOffer')) {
         /**
          * Install the plugin in WordPress.
          * 
-         * When your activate this plugin, this function create new table in database.
+         * When your activate this plugin, this method create new table in database.
          * This table is used for stored all data from the offers.
          * 
          * @global object $wpdb
@@ -136,7 +141,7 @@ if (!class_exists('JobOffer')) {
         /**
          * Initialize template for interact with database.
          * 
-         * This function allows to apply the functions of addition, deletion or modification
+         * This method allows to apply the methods of addition, deletion or modification
          * of various offers used by the admin part.
          * In fact, she redirige the admin from the good form page.
          */
@@ -162,45 +167,27 @@ if (!class_exists('JobOffer')) {
                 
                 /** INSERT SECTION **/
                 case 'addoffer' :
-                    if ((trim($_POST['jo_title']) != '') && (trim($_POST['jo_content']) != '') && (trim($_POST['jo_type']) != '')) {                    
-                        $id = $this->_dao->get_max_id() + 1;
-                        if ($id == '') {
-                            $id = 0;
-                        }
-                        $enum = Enum::get_instance();
-                        $offerType = $enum->get_enum()[$_POST['jo_type']];
-                        $data = array(
-                            'id' => intval($id),
-                            'title' => sanitize_text_field($_POST['jo_title']),
-                            'content' => sanitize_text_field($_POST['jo_content']),
-                            'type' => $offerType,
-                        );
-                        $offer = new Offer($data);
-                        if ($this->_dao->insert($offer)) {
-                            //header('Location:' . get_bloginfo('url') . '/wp-admin/options-general.php?page=job-offer/job-offer.php&addoffer=ok');
-                        } else {
-                            echo '<span class="error-job-offer bold-job-offer">' . __('An error occured, please contact a developper for fix it.', 'job-offer') . '</span>';
+                    if (isset($_POST['jo_title'], $_POST['jo_content'], $_POST['jo_type'])) {
+                        if ((trim($_POST['jo_title']) != '') && (trim($_POST['jo_content']) != '') && (trim($_POST['jo_type']) != '')) {                  
+                            if ($this->_insert_offer($_POST['jo_title'], $_POST['jo_content'], $_POST['jo_type'])) {
+                                //header('Location:' . get_bloginfo('url') . '/wp-admin/options-general.php?page=job-offer/job-offer.php&addoffer=ok');
+                            } else {
+                                echo '<span class="job-offer-error job-offer-bold">' . __('An error occured, please contact a developper for fix it.', 'job-offer') . '</span>';
+                            }
                         }
                     }
                     break;
-                
+                    
                 /** UPDATE SECTION **/
                 case 'updateoffer' :
-                    if ((trim($_POST['jo_title']) != '') && (trim($_POST['jo_content']) != '') && (trim($_POST['jo_type']) != '')) {
-                        $enum = Enum::get_instance();
-                        $offerType = $enum->get_enum()[$_POST['jo_type']];
-                        $data = array(
-                            'id' => intval($_POST['jo_id']),
-                            'title' => sanitize_text_field($_POST['jo_title']),
-                            'content' => ($_POST['jo_content']),
-                            'type' => $offerType,
-                        );
-                        $offer = new Offer($data);
-                        if ($this->_dao->update($offer)) {
-                            //header('Location:' . get_bloginfo('url') . '/wp-admin/options-general.php?page=job-offer/job-offer.php&updateoffer=ok');
-                        } else {
-                            echo '<span class="error-job-offer bold-job-offer">' . __('An error occured, please contact a developper for fix it.', 'job-offer') . '</span>';
-                        }
+                    if (isset($_POST['jo_title'], $_POST['jo_content'], $_POST['jo_type'], $_POST['jo_id'])) {
+                        if ((trim($_POST['jo_title']) != '') && (trim($_POST['jo_content']) != '') && (trim($_POST['jo_type']) != '')) {
+                            if ($this->_update_offer($_POST['jo_id'], $_POST['jo_title'], $_POST['jo_content'], $_POST['jo_type'])) {
+                                //header('Location:' . get_bloginfo('url') . '/wp-admin/options-general.php?page=job-offer/job-offer.php&updateoffer=ok');
+                            } else {
+                                echo '<span class="job-offer-error job-offer-bold">' . __('An error occured, please contact a developper for fix it.', 'job-offer') . '</span>';
+                            }
+                        } 
                     }
                     break;
                 
@@ -210,7 +197,7 @@ if (!class_exists('JobOffer')) {
                         if ($this->_dao->delete(intval($_GET['id']))) {
                             //header('Location:' . get_bloginfo('url') . '/wp-admin/options-general.php?page=job-offer/job-offer.php&deleteoffer=ok');
                         } else {
-                            echo '<span class="error-job-offer bold-job-offer">' . __('An error occured, please contact a developper for fix it.', 'job-offer') . '</span>';
+                            echo '<span class="job-offer-error job-offer-bold">' . __('An error occured, please contact a developper for fix it.', 'job-offer') . '</span>';
                         }
                     }
                     break;
@@ -221,6 +208,7 @@ if (!class_exists('JobOffer')) {
             }
             
             /** MESSAGE SUCCESSFUL SECTION **/
+            /* /!\ Not Working for the moment because header('Location:'); not working. */
             if (isset($_GET['offer'])) {
                 switch ($_GET['offer']) {
                     case 'addoffer' :
@@ -244,7 +232,7 @@ if (!class_exists('JobOffer')) {
         /**
          * Return all offers from Database.
          * 
-         * This function return all offers present in Database.
+         * This method return all offers present in Database.
          * When it create the array, create a new Offer object for each entry.
          * Then, return the array with all Offers presents in Database.
          * 
@@ -270,7 +258,7 @@ if (!class_exists('JobOffer')) {
         /**
          * Return on offer frome Database.
          * 
-         * This function return a single Offer object from the database.
+         * This method return a single Offer object from the database.
          * Using the id for return the good entry, generated Offer object and return it.
          * 
          * @param integer $id
@@ -290,11 +278,15 @@ if (!class_exists('JobOffer')) {
             );
             return new Offer($data);
         }
+        
+        /**********************************************/
+        /*            REGISTERS SECTION               */
+        /**********************************************/
 
         /**
          * Register and enqueue stylesheet files.
          * 
-         * This function register and enqueue plugin stylesheet.
+         * This method register and enqueue plugin stylesheet.
          * It used for activate custom css from plugin.
          */
         public function register_stylesheet() {
@@ -307,7 +299,7 @@ if (!class_exists('JobOffer')) {
         /**
          * Register, translate and enqueue script files.
          * 
-         * This function register and enqueue plugin script.
+         * This method register and enqueue plugin script.
          * It used for activate custom javascript from plugin.
          */
         public function register_scripts() {
@@ -329,7 +321,7 @@ if (!class_exists('JobOffer')) {
         /**
          * Loaded textdomain for translations.
          * 
-         * This function load textdomain for add translations.
+         * This method load textdomain for add translations.
          * It used for activate plugin internationalization.
          */
         public function load_textdomain() {
@@ -338,35 +330,45 @@ if (!class_exists('JobOffer')) {
             }
         }
         
-       /**
-        * Return all offers.
-        * 
-        * This function is used for displaying all offers present 
-        * in database.
-        * It used for generate a shortcode who placed on post page.
-        */
-       public function shortcode_all_offers() {
-            $str = '<table>';
-            $str .= '<tr>';
-            $str .= '<th>Type of offers</th>';
-            $str .= '<th>Title</th>';
-            $str .= '</tr>';
-
+        /**********************************************/
+        /*            SHORTOCODE SECTION              */
+        /**********************************************/
+        
+        /**
+         * Return all offers.
+         * 
+         * This method is used for displaying all offers present 
+         * in database.
+         * It used for generate a shortcode who placed on post page.
+         */
+        public function shortcode_all_offers() {
             $offers = $this->get_offers();
-            foreach($offers as $offer) {
-                 $str .= '<tr>';
-                 $str .= '<td class="' . str_replace(' ', '_', strtolower($offer->get_type()->get_key())) . '">' . $offer->get_type()->get_key() . '</td>';
-                 $str .= '<td><a class="job-offer-link" href="' . '&amp;id=' . $offer->get_id() . '">' . stripslashes($offer->get_title()) . '</a></td>';
-                 $str .= '</tr>';
+            
+            if (count($offers) == 0) {
+                $str = '<p>' . __('Nothing offers are currently present.') . '</p>';
+            } else {
+                $str = '<table>';
+                $str .= '<tr>';
+                $str .= '<th>Type of offers</th>';
+                $str .= '<th>Title</th>';
+                $str .= '</tr>';
+
+                foreach($offers as $offer) {
+                    $str .= '<tr>';
+                    $str .= '<td class="' . str_replace(' ', '_', strtolower($offer->get_type()->get_key())) . '">' . $offer->get_type()->get_key() . '</td>';
+                    $str .= '<td><a class="job-offer-link" href="' . strtolower(str_replace(' ', '-', $offer->get_title())) . '">' . stripslashes($offer->get_title()) . '</a></td>';
+                    $str .= '<input type="hidden" value="' . $offer->get_id() . '" id="jo_id" name="jo_id" />';
+                    $str .= '</tr>';
+                }
+                $str .= '</table>';
             }
-            $str .= '</table>';
             return $str;            
        }
        
         /**
          * Return one offer from Database.
          * 
-         * This function is used for displaying 1 offer.
+         * This method is used for displaying 1 offer.
          * It used for create a shortcode used for see description from 1 offer.
          * 
          * @param integer $id
@@ -377,12 +379,82 @@ if (!class_exists('JobOffer')) {
        public function shortcode_offer($id) {
            if ($id >= 0) {
                 $offer = $this->get_offer($id['id']);
-                $str = '<h2>' . stripslashes($offer->get_title()) . '</h2>';
-                $str .= '<p>' . stripslashes($offer->get_content()) . '</p>';
+                $str = '<h2 id="job-offer-title-post">' . stripslashes($offer->get_title()) . '</h2>';
+                $str .= '<p id="job-offer-content-post>' . stripslashes($offer->get_content()) . '</p>';
            } else {
                $str = '<p>' . __('No offers founds') . '</p>';
            }
            return $str;
+       }
+       
+       /**
+        * Added offer in Database.
+        * 
+        * This method added a new offer in Database.
+        * For that, using all parameters for creating a new Offer, 
+        * and after creation, send it into Database.
+        * 
+        * @access private
+        * @param string $title
+        *   Title of the Offer.
+        * @param string $content
+        *   Content of the Offer.
+        * @param integer $type
+        *   Rank of the value present in Enum.
+        * @return bool
+        *   The state of the request.
+        */
+       private function _insert_offer($title, $content, $type) {
+           $id = $this->_dao->get_max_id() + 1;
+            if ($id == '') {
+                $id = 0;
+            }
+            $enum = Enum::get_instance();
+            $offerType = $enum->get_enum()[$type];
+            $data = array(
+                'id' => intval($id),
+                'title' => sanitize_text_field($title),
+                'content' => sanitize_text_field($content),
+                'type' => $offerType,
+            );
+            $offer = new Offer($data);
+            return $this->_dao->insert($offer);
+       }
+       
+        /**********************************************/
+        /*        PRIVATE FUNCTION SECTION            */
+        /**********************************************/
+       
+       /**
+        * Update an offer present in Database.
+        * 
+        * This fucntion updated an offer present in Database.
+        * Using Id for modify the good entry from Database and construct 
+        * an object Offer for send it into DAO method. 
+        * 
+        * @access private
+        * @param integer $id 
+        *   Id of the offer on Database.
+        * @param string $title
+        *   Title of the Offer.
+        * @param string $content
+        *   Content of the Offer.
+        * @param integer $type
+        *   Rank of the value present in Enum.
+        * @return bool
+        *   The state of the request.
+        */
+       private function _update_offer($id, $title, $content, $type) {
+           $enum = Enum::get_instance();
+            $offerType = $enum->get_enum()[$type];
+            $data = array(
+                'id' => intval($id),
+                'title' => sanitize_text_field($title),
+                'content' => ($content),
+                'type' => $offerType,
+            );
+            $offer = new Offer($data);
+            return $this->_dao->update($offer);    
        }
     }
 }

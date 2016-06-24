@@ -54,8 +54,8 @@ class Offer {
     /**
      * Constuctor of an Offer.
      * 
-     * It using hydrate function for created directly my Object,
-     * without calling all setters functions.
+     * It using hydrate method for created directly my Object,
+     * without calling all setters methods.
      * 
      * @param mixed $data
      *  Data received from the database.
@@ -176,9 +176,9 @@ class Offer {
     }
     
     /**
-     * This function is used for hydrate Object.
-     * For hydrate on object, call hydrate function on __construct 
-     * and your object will be create directly without calling all setters functions.
+     * This method is used for hydrate Object.
+     * For hydrate on object, call hydrate method on __construct 
+     * and your object will be create directly without calling all setters methods.
      * 
      * @access private
      * @param array $data

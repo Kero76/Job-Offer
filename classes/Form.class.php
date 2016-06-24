@@ -2,7 +2,7 @@
 
 /**
  * This class represent form field using on admin page.
- * All of these functions return an elements presents on admin page.
+ * All of these methods return an elements presents on admin page.
  * This object is create for centralize all form fields.
  * 
  * @since Job Offer 1.0.0
@@ -13,7 +13,7 @@ class Form {
     /**
      * Return title form field.
      * 
-     * This function return a string who represent an input type text field.
+     * This method return a string who represent an input type text field.
      * 
      * @param string $content
      *  If this parameter is empty, you create a empty field, 
@@ -32,7 +32,7 @@ class Form {
     /**
      * Return content form field.
      * 
-     * This function return a string who represents either TinyMCE editor, or textarea field.
+     * This method return a string who represents either TinyMCE editor, or textarea field.
      * It return a TinyMCE editor if it enable, otherwise return a textarea field. 
      * 
      * @param integer $rows
@@ -64,8 +64,8 @@ class Form {
     /**
      * Return set of all EnumType present in Enum object.
      * 
-     * This function return a string who represent a select html field.
-     * For display the list, this function have a enum parameter.
+     * This method return a string who represent a select html field.
+     * For display the list, this method have a enum parameter.
      * This parameter represent the list who display on page.
      * The second argument represent the element select outcome of the database.
      * 
@@ -97,7 +97,7 @@ class Form {
     /**
      * Return submit button form field.
      * 
-     * This function return a string who represent an input type submit html field.
+     * This method return a string who represent an input type submit html field.
      * 
      * @return string
      *  The html field for an input submit type.
@@ -109,7 +109,7 @@ class Form {
     /**
      * Return a hidden form field.
      * 
-     * This function return a string who represent an input type hidden field.
+     * This method return a string who represent an input type hidden field.
      * It used only on update form because when update, it's necessary
      * to send the id for modified the good entry on Database.
      * 
