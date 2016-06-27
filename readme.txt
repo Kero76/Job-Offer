@@ -60,8 +60,8 @@ Nothing here for the moment.
 Created post on posts database. Avoid to create post with single offer shortcode.
 
 = 1.0.1 =
-Fixed lot of graphics bug.
-Added some script protections about admin page.
+Fixed lot of graphics bugs.
+Added some scripts protections about admin page.
 
 = 1.0.0 =
 Initial release

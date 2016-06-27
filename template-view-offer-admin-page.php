@@ -30,7 +30,7 @@
                 foreach($offers as $offer) {
                     echo '<tr>';
                     echo '<td>' . $offer->get_id() . '</td>';
-                    echo '<td class="' . str_replace(' ', '_', strtolower($offer->get_type()->get_key())) . '">' . $offer->get_type()->get_key()  . '</td>';
+                    echo '<td><div class="' . str_replace(' ', '_', strtolower($offer->get_type()->get_key())) . '">' . $offer->get_type()->get_key()  . '</div></td>';
                     echo '<td>' . stripslashes($offer->get_title()) . '</td>';
                     echo '<td><a href="?page=job-offer/job-offer.php&p=update&amp;id=' . $offer->get_id() . '"><button class="button button-primary">' . __('Update', 'job-offer')  . '</button></a></td>';
                     echo '<td><a class="job-offer-button-deletion" href="?page=job-offer/job-offer.php&action=deleteoffer&amp;id=' . $offer->get_id() . '"><button class="button button-primary">' . __('Delete', 'job-offer') . '</button></a></td>';

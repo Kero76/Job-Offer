@@ -18,23 +18,35 @@
 /****************************************/
 /*    Style for little rectangle        */
 /****************************************/
-.traineeship, .temporary_position, .full-time, .permanent_position {
-    width: 150px;
-    height: 35px;
+.traineeship, .stage,
+.temporary_position, .cdi,
+.full-time, .temps_plein, 
+.permanent_position, .cdd,
+.alternation, .alternance {
+    width: 90px;
+    height: 30px;
+    border-radius: 10px;
+    padding-top: 10px;
+    text-align: center;
+    color: white;
 }
 
-.traineeship {
-    
+.stage, .traineeship {
+    background-color: #0074a2;
 }
 
-.temporary_position {
-    
+.cdi, .temporary_position {
+    background-color: #cc6d23;
 }
 
-.full-time {
-    
+.temps_plein, .full-time {
+    background-color: #008000;
 }
 
-.permanent_position {
-    
+.cdd, .permanent_position {
+    background-color: #d02c21;
+}
+
+.alternance, .alternation {
+    background-color: navy;
 }

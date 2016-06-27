@@ -2,6 +2,8 @@
  * Using 'jQuery' and not '$' to writing code because Wordpress
  * uses '$' selector and if I use it too, it can create some bugs.
  *
+ * @since Job Offer 1.1.0
+ *  -> Autorefresh view admin page when insert, delete or update an offer.
  * @since Job Offer 1.0.1 
  *  -> Added function for protect database from empty field.
  *  -> Added function for protect potential offer's deletions.
@@ -69,10 +71,7 @@ jQuery(document).ready(function() {
     });
     
     /**
-     * Reload potentially the current page if some parameters are present in URL.
-     * 
-     * This function parse current page URL and if find parameters 'addoffer', 'deleteoffer' or 'updateoffer'
-     * is present, and if it's the case, so it relaod the page for update new entry present on Database.
+     * Reload the current page after a click on a button.
      * 
      * @param object window
      *  The object represent the window.
@@ -83,4 +82,16 @@ jQuery(document).ready(function() {
             location.reload(true);
         });
     });
+    
+    
+    /**
+     * This function split current url and search '&action' substring.
+     * If it find '&action', it split url, and rewrite url without string after '&action'
+     * for rewrite correctly the url and reload the page for refresh page.
+     */
+    var url = window.location.href;   
+    if (~url.indexOf('&action')) {
+        var split = url.split('&action');
+        window.location.href = split[0];
+    }
 });

@@ -370,16 +370,15 @@ if (!class_exists('JobOffer')) {
                 foreach($offers as $offer) {
                     $sanitizer->set_string($offer->get_title());
                     $sanitizer->sanitize_post_name();
-                    
                     $str .= '<tr>';
-                    $str .= '<td class="' . str_replace(' ', '_', strtolower($offer->get_type()->get_key())) . '">' . $offer->get_type()->get_key() . '</td>';
+                    $str .= '<td><div class="' . str_replace(' ', '_', strtolower($offer->get_type()->get_key())) . '">' . $offer->get_type()->get_key()  . '</div></td>';
                     $str .= '<td><a class="job-offer-link" href="' . $sanitizer->get_string() . '">' . stripslashes($offer->get_title()) . '</a></td>';
                     $str .= '<input type="hidden" value="' . $offer->get_id() . '" id="jo_id" name="jo_id" />';
                     $str .= '</tr>';
                 }
                 $str .= '</table>';
             }
-            return $str;            
+            return $str;
        }
        
         /**

@@ -144,18 +144,20 @@ class DAO {
             
             if ($post_name != '') {
                 $post = array(
-                    'post_title'    => $offer->get_title(),
-                    'post_content'  => $offer->get_content(),
-                    'post_name'     => $post_name,
-                    'post_status'   => 'publish',
-                    'post_author'   => $id_user,            
+                    'post_title'        => $offer->get_title(),
+                    'post_content'      => $offer->get_content(),
+                    'post_name'         => $post_name,
+                    'post_status'       => 'publish',
+                    'post_author'       => $id_user,
+                    'comment_status'    => 'closed',
                 );     
             } else {
                 $post = array(
-                    'post_title'    => $offer->get_title(),
-                    'post_content'  => $offer->get_content(),
-                    'post_status'   => 'publish',
-                    'post_author'   => $id_user,            
+                    'post_title'        => $offer->get_title(),
+                    'post_content'      => $offer->get_content(),
+                    'post_status'       => 'publish',
+                    'post_author'       => $id_user,
+                    'comment_status'    => 'closed',          
                 ); 
             }
             wp_insert_post($post);
