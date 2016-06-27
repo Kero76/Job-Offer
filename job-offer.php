@@ -3,7 +3,7 @@
 Plugin Name: Job Offer
 Plugin URI: 
 Description: This plugin is used for create job or traineership offer for your website.
-Version: 1.0.1
+Version: 1.1.0
 Author: Nicolas GILLE
 Author URI:
 Licence: GPLv2+ or later
@@ -31,24 +31,29 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
 /**
- * Includes EnumType class.
+ * Include EnumType class.
  */
 require_once('classes/EnumType.class.php');
 
 /**
- * Includes Enum class.
+ * Include Enum class.
  */
 require_once('classes/Enum.class.php');
 
 /**
- * Includes DAO class for interact with Database.
+ * Include DAO class for interact with Database.
  */
 require_once('classes/DAO.class.php');
 
 /**
- * Includes Offer class for interact with DAO object..
+ * Include Offer class for interact with DAO object..
  */
 require_once('classes/Offer.class.php');
+
+/**
+ * Include Sanitize class for sanitize link on job offer list.
+ */
+require_once('classes/Sanitizer.class.php');
 
 if (!class_exists('JobOffer')) {
 
@@ -56,8 +61,11 @@ if (!class_exists('JobOffer')) {
      * Main class of plugin.
      * 
      * This class is the main class of plugin. 
-     * In fact, she centralize all methods which enable to run the plugin. 
+     * In fact, it centralize all methods which enable to run the plugin.
      * 
+     * @since Job Offer 1.1.0
+     *  -> Added class Sanitizer for sanitize href value on shortcode_all_offers() method.
+     *  -> Autogenerate good link bewteen all offers page and individual page.
      * @since Job Offer 1.0.1
      *  -> Replace $enum = new Enum() by $enum = Enum::get_instance().
      *  -> Replace calling DAO's method static by a simple called method.
@@ -65,7 +73,7 @@ if (!class_exists('JobOffer')) {
      *  -> Creation of private method _update_offer($id, $title, $content, $type).
      *  -> Modify function shortcode_all_offers for generate a link for see all informations about offers.
      * @since Job Offer 1.0.0
-     * @version 1.0.1
+     * @version 1.1.0
      */
     class JobOffer {
         
@@ -340,6 +348,8 @@ if (!class_exists('JobOffer')) {
          * This method is used for displaying all offers present 
          * in database.
          * It used for generate a shortcode who placed on post page.
+         * Use class Sanitizer for sanitize href link and auto-create good link for see 
+         * more informations abouts offers.
          */
         public function shortcode_all_offers() {
             $offers = $this->get_offers();
@@ -352,11 +362,18 @@ if (!class_exists('JobOffer')) {
                 $str .= '<th>Type of offers</th>';
                 $str .= '<th>Title</th>';
                 $str .= '</tr>';
+                
+                if (class_exists('Sanitizer')) {
+                    $sanitizer = new Sanitizer('');
+                }
 
                 foreach($offers as $offer) {
+                    $sanitizer->set_string($offer->get_title());
+                    $sanitizer->sanitize_post_name();
+                    
                     $str .= '<tr>';
                     $str .= '<td class="' . str_replace(' ', '_', strtolower($offer->get_type()->get_key())) . '">' . $offer->get_type()->get_key() . '</td>';
-                    $str .= '<td><a class="job-offer-link" href="' . strtolower(str_replace(' ', '-', $offer->get_title())) . '">' . stripslashes($offer->get_title()) . '</a></td>';
+                    $str .= '<td><a class="job-offer-link" href="' . $sanitizer->get_string() . '">' . stripslashes($offer->get_title()) . '</a></td>';
                     $str .= '<input type="hidden" value="' . $offer->get_id() . '" id="jo_id" name="jo_id" />';
                     $str .= '</tr>';
                 }
@@ -386,6 +403,10 @@ if (!class_exists('JobOffer')) {
            }
            return $str;
        }
+              
+        /**********************************************/
+        /*        PRIVATE FUNCTION SECTION            */
+        /**********************************************/
        
        /**
         * Added offer in Database.
@@ -405,7 +426,7 @@ if (!class_exists('JobOffer')) {
         *   The state of the request.
         */
        private function _insert_offer($title, $content, $type) {
-           $id = $this->_dao->get_max_id() + 1;
+            $id = $this->_dao->get_max_id() + 1;
             if ($id == '') {
                 $id = 0;
             }
@@ -414,17 +435,13 @@ if (!class_exists('JobOffer')) {
             $data = array(
                 'id' => intval($id),
                 'title' => sanitize_text_field($title),
-                'content' => sanitize_text_field($content),
+                'content' => $content,
                 'type' => $offerType,
             );
             $offer = new Offer($data);
             return $this->_dao->insert($offer);
        }
-       
-        /**********************************************/
-        /*        PRIVATE FUNCTION SECTION            */
-        /**********************************************/
-       
+
        /**
         * Update an offer present in Database.
         * 
@@ -450,13 +467,13 @@ if (!class_exists('JobOffer')) {
             $data = array(
                 'id' => intval($id),
                 'title' => sanitize_text_field($title),
-                'content' => ($content),
+                'content' => $content,
                 'type' => $offerType,
             );
             $offer = new Offer($data);
             return $this->_dao->update($offer);    
        }
-    }
+    } /** END CLASS **/
 }
 
 /*

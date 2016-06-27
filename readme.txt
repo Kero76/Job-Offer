@@ -4,7 +4,7 @@ Donate link:
 Tags: cookie, job, jobs, offer, offers, traineeship
 Requires at least: 4.5
 Tested up to: 4.5
-Stable tag: 1.0.1
+Stable tag: 1.1.0
 License: Licence GPLv2 or Later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,20 +14,21 @@ Job Offer allows you to add differents type of offers on your website.
 
 Job Offer allows you to add differents type of offers on your website.
 
-For more information, contact developper (Nicolas GILLE <nic.gille@gmail.com>.
+For more information, contact developper (Nicolas GILLE <nic.gille@gmail.com>).
 
 = Features include: =
 
 * Added some type of offer.
-* Using TyniMCE editor if is enable for siplify the style of your offer.
+* Using TyniMCE editor if is enable for simplify the style of your offer.
 * Generate shortcode for simplify integration on your website.
+* Generate automaticaly the good link on your offers pages.
+* Using custom shortcode for generate one offer infotmation if you like, for customised style for example.
 * See directly and autoselect the shortcode beside all offers view.
-* .pot file for translations included
 
 = Usage: =
 
 For using Job Offer, using two shortcode on your post or page.
-    - [jo_jobs] for see all offers stored in your website.
+    - [jo_jobs] for see all offers stored in your website and redirect it on the good post.
     - [jo_job id="[your_id]"] when replace [your_id] by offer id for see the details about her.
 For simplified, you can find these shortcodes directly in your admin page, beside "View all Offers" page.
 
@@ -43,7 +44,7 @@ and add your new type directly in the function _init_enum_() at the end of the c
 1. Install Job Offer by uploading the files to your server
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Go to the Job Offer settings under Setting and create your first offer.
-4. Add shortcode for displaying offers in your website.
+4. Add shortcodes for displaying offers in your website.
 
 == Frequently Asked Questions ==
 
@@ -54,6 +55,13 @@ No questions yet.
 Nothing here for the moment.
 
 == Changelog ==
+
+= 1.1.0 =
+Created post on posts database. Avoid to create post with single offer shortcode.
+
+= 1.0.1 =
+Fixed lot of graphics bug.
+Added some script protections about admin page.
 
 = 1.0.0 =
 Initial release

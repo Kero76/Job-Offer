@@ -6,17 +6,24 @@
 require_once('Enum.class.php');
 
 /**
+ * Includes Sanitizer class for sanitize post name before insert it into Database.
+ */
+require_once('Sanitizer.class.php');
+
+/**
  * This class represent the connexion between the model and the view.
  * She implement the Design Pattern Singleton because only one connexion with the Database
  * are necessary for running the plugin and avoid to create at each time an object DAO.
  * 
+ * @since Job Offer 1.1.0
+ *  -> Added class Sanitize for sanitize post name before added on WordPress Database.
  * @since Job Offer 1.0.1
  *  -> Implements Design Pattern Singleton.
  *  -> Replace $enum = new Enum() by $enum = Enum::get_instance()
  *  -> Added ORDER BY id ASC into query method.
  *  -> Creation, deletion and update wp_posts table for create post for each Offer from custom table.
  * @since Job Offer 1.0.0
- * @version 1.0.0
+ * @version 1.1.0
  */
 class DAO {
     
@@ -127,14 +134,30 @@ class DAO {
             } else {
                 $id_user = 1;
             }
-
-            $post = array(
-                'post_title'    => $offer->get_title(),
-                'post_content'  => $offer->get_content(),
-                //'post_name'     => delete ' ', char accentué, tolower
-               'post_status'   => 'publish',
-                'post_author'   => $id_user,            
-            );        
+            
+            $post_name = '';
+            if (class_exists('Sanitizer')) {
+                $sanitizer = new Sanitizer($offer->get_title());
+                $sanitizer->sanitize_post_name();
+                $post_name = $sanitizer->get_string();
+            }
+            
+            if ($post_name != '') {
+                $post = array(
+                    'post_title'    => $offer->get_title(),
+                    'post_content'  => $offer->get_content(),
+                    'post_name'     => $post_name,
+                    'post_status'   => 'publish',
+                    'post_author'   => $id_user,            
+                );     
+            } else {
+                $post = array(
+                    'post_title'    => $offer->get_title(),
+                    'post_content'  => $offer->get_content(),
+                    'post_status'   => 'publish',
+                    'post_author'   => $id_user,            
+                ); 
+            }
             wp_insert_post($post);
             return true;
         }
