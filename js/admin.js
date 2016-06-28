@@ -2,12 +2,15 @@
  * Using 'jQuery' and not '$' to writing code because Wordpress
  * uses '$' selector and if I use it too, it can create some bugs.
  *
+ * @since Job Offer 1.1.1
+ *  -> Fixed autorefresh for performed only with specifics actions.
  * @since Job Offer 1.1.0
  *  -> Autorefresh view admin page when insert, delete or update an offer.
  * @since Job Offer 1.0.1 
  *  -> Added function for protect database from empty field.
  *  -> Added function for protect potential offer's deletions.
  * @since Job Offer 1.0.0
+ * @version 1.0.2
  */
 
 /**
@@ -85,13 +88,13 @@ jQuery(document).ready(function() {
     
     
     /**
-     * This function split current url and search '&action' substring.
-     * If it find '&action', it split url, and rewrite url without string after '&action'
+     * This function split current url and search '&action=updateoffer', '&action=adoffer' of '&action=deleteoffer' substring.
+     * If it find substring, it split url, and rewrite url without string after '&action'
      * for rewrite correctly the url and reload the page for refresh page.
      */
     var url = window.location.href;   
-    if (~url.indexOf('&action')) {
-        var split = url.split('&action');
+    if (~url.indexOf('&action=updateoffer') || ~url.indexOf('&action=addoffer') || ~url.indexOf('&action=deleteoffer')) {
+        var split = url.split('&action=');
         window.location.href = split[0];
     }
 });

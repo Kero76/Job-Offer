@@ -15,6 +15,10 @@ require_once('Sanitizer.class.php');
  * She implement the Design Pattern Singleton because only one connexion with the Database
  * are necessary for running the plugin and avoid to create at each time an object DAO.
  * 
+ * @since Job Offer 1.1.1
+ *  -> Added method get_publish_post() for retrieve only the post with publish status for display it on front page.
+ *  -> Moved insert, update and delete wordpress posts table in private function.
+ *  -> Changed post status to publish at pending, for see and validate offer before send it on website.
  * @since Job Offer 1.1.0
  *  -> Added class Sanitize for sanitize post name before added on WordPress Database.
  * @since Job Offer 1.0.1
@@ -23,7 +27,7 @@ require_once('Sanitizer.class.php');
  *  -> Added ORDER BY id ASC into query method.
  *  -> Creation, deletion and update wp_posts table for create post for each Offer from custom table.
  * @since Job Offer 1.0.0
- * @version 1.1.0
+ * @version 1.1.2
  */
 class DAO {
     
@@ -70,7 +74,7 @@ class DAO {
      * Otherwise, if you would return an specific offer, return only one offer.
      * 
      * @global object $wpdb
-     *  It's a represent of the Database access create by WordPress.
+     *  It's a representant of the Database access create by WordPress.
      * @param int $id
      *  The id of the potential return value.
      * @return array
@@ -95,7 +99,7 @@ class DAO {
      * True if the request is successful, otherwise return false.
      * 
      * @global object $wpdb
-     *  It's a represent of the Database access create by WordPress.
+     *  It's a representant of the Database access create by WordPress.
      * @param Offer $offer
      *  New Offer to add on Database.
      * @return bool
@@ -122,45 +126,11 @@ class DAO {
                 '%d',
             )
         );
-        
+         
         if (!$sql) {
             return false;
         } else {
-            /**************************************/
-            /*        WORDPRESS DATABASE          */
-            /**************************************/
-            if (function_exists('get_current_user_id')) {
-                $id_user = get_current_user_id();
-            } else {
-                $id_user = 1;
-            }
-            
-            $post_name = '';
-            if (class_exists('Sanitizer')) {
-                $sanitizer = new Sanitizer($offer->get_title());
-                $sanitizer->sanitize_post_name();
-                $post_name = $sanitizer->get_string();
-            }
-            
-            if ($post_name != '') {
-                $post = array(
-                    'post_title'        => $offer->get_title(),
-                    'post_content'      => $offer->get_content(),
-                    'post_name'         => $post_name,
-                    'post_status'       => 'publish',
-                    'post_author'       => $id_user,
-                    'comment_status'    => 'closed',
-                );     
-            } else {
-                $post = array(
-                    'post_title'        => $offer->get_title(),
-                    'post_content'      => $offer->get_content(),
-                    'post_status'       => 'publish',
-                    'post_author'       => $id_user,
-                    'comment_status'    => 'closed',          
-                ); 
-            }
-            wp_insert_post($post);
+            $this->_insert_post($offer);
             return true;
         }
     }
@@ -172,7 +142,7 @@ class DAO {
      * True if the request is successful, otherwise return false.
      * 
      * @global object $wpdb
-     *  It's a represent of the Database access create by WordPress.
+     *  It's a representant of the Database access create by WordPress.
      * @param Offer $offer
      *  The new content of the offer.
      * @return bool
@@ -205,26 +175,7 @@ class DAO {
         if (!$sql) {
             return false;
         } else {
-            /**************************************/
-            /*        WORDPRESS DATABASE          */
-            /**************************************/
-            $tableName = $wpdb->prefix . 'posts';
-            $request = 'SELECT ID FROM `' . $tableName . '` WHERE `post_title` = "' . $oldData['title'] . '"';
-            $result = $wpdb->get_row($request, ARRAY_A);
-            
-            $wpdb->update(
-                $tableName,
-                array(
-                    'post_title' => $offer->get_title(),
-                    'post_content' => $offer->get_content(),
-                ),
-                array('ID' => $result['ID']),
-                array(
-                    '%s',
-                    '%s',
-                ),
-                array('%d')
-            );
+            $this->_update_post($offer, $oldData);
             return true;
         }
     }
@@ -236,7 +187,7 @@ class DAO {
      * True if the request is successful, otherwise return false.
      * 
      * @global object $wpdb
-     *  It's a represent of the Database access create by WordPress.
+     *  It's a representant of the Database access create by WordPress.
      * @param integer $id
      *  Id of offer who deleted.
      * @return bool
@@ -257,17 +208,7 @@ class DAO {
         if (!$sql) {
             return false;
         } else {
-            /**************************************/
-            /*        WORDPRESS DATABASE          */
-            /**************************************/            
-            $tableName = $wpdb->prefix . 'posts';
-            $request = 'SELECT ID FROM `' . $tableName . '` WHERE `post_title` = "' . $oldData['title'] . '"';
-            $result = $wpdb->get_row($request, ARRAY_A);
-            $wpdb->delete(
-                $tableName, 
-                array('ID' => $result['ID']), 
-                array('%d')
-            );
+            $this->_delete_post($oldData);
             return true;
         }
     }
@@ -276,12 +217,146 @@ class DAO {
      * Return the last id present on database.
      * 
      * @global object $wpdb
-     *  It's a represent of the Database access create by WordPress.
+     *  It's a representant of the Database access create by WordPress.
      */
     public function get_max_id() {
         global $wpdb;
         $tableName = $wpdb->prefix . 'job_offer';
         $max = $wpdb->get_row("SELECT MAX(id) AS max FROM " . $tableName, ARRAY_A);
         return $max['max'];
+    }
+    
+    /**
+     * Return offer post with status publish.
+     * 
+     * It used because when we add new offer post on Database, the status is pending
+     * and while the status is pending, we can't see offer informations before upadting status post.
+     * 
+     * @global object $wpdb
+     *  It's a representant of the Database access create by WordPress.
+     */
+    public function get_publish_post() {
+        global $wpdb;
+        $job_offer_table = $wpdb->prefix. 'job_offer';
+        $post_table = $wpdb->prefix . 'posts';
+        
+        $parameters = array(
+            'jo_id'         => $job_offer_table . '.id',
+            'jo_title'      => $job_offer_table . '.title',
+            'jo_content'    => $job_offer_table . '.type',
+            'post_title'    => $post_table . '.post_title',
+        );
+        
+        $sql = "SELECT " . $parameters['jo_id'] . ", " . $parameters['jo_title'] . ", " . $parameters['jo_content'] .
+                " FROM " . $job_offer_table . 
+                " JOIN " . $post_table . 
+                " ON "   . $parameters['post_title'] . " = " . $parameters['jo_title'] .
+                " WHERE `post_status` = 'publish' ORDER BY " . $parameters['jo_id'] . " ASC";
+        
+        return $wpdb->get_results($sql, ARRAY_A);
+    }
+    
+    /**********************************************/
+    /*     PRIVATE WORDPRESS ACCESS DB SECTION    */
+    /**********************************************/
+    
+    /**
+     * Insert a new post after offer information.
+     * 
+     * The new post are create with draft stauts. 
+     * In fact, it can see and validate offer before send it in website.
+     * 
+     * @access private
+     * @param Offer $offer
+     *  The offer is used for receive data to insert on post value.
+     */
+    private function _insert_post(Offer $offer) {
+        if (function_exists('get_current_user_id')) {
+            $id_user = get_current_user_id();
+        } else {
+            $id_user = 1;
+        }
+
+        $post_name = '';
+        if (class_exists('Sanitizer')) {
+            $sanitizer = new Sanitizer($offer->get_title());
+            $sanitizer->sanitize_post_name();
+            $post_name = $sanitizer->get_string();
+        }
+
+        if ($post_name != '') {
+            $post = array(
+                'post_title'        => $offer->get_title(),
+                'post_content'      => $offer->get_content(),
+                'post_name'         => $post_name,
+                'post_status'       => 'pending',
+                'post_author'       => $id_user,
+                'comment_status'    => 'closed',
+            );
+        } else {
+            $post = array(
+                'post_title'        => $offer->get_title(),
+                'post_content'      => $offer->get_content(),
+                'post_status'       => 'pending',
+                'post_author'       => $id_user,
+                'comment_status'    => 'closed',
+            ); 
+        }
+        wp_insert_post($post);
+    }
+    
+    /**
+     * Update a post from WordPress table.
+     * 
+     * This function update the post issue from posts table.
+     * It execute after offer's update and modify directly the post after new data.
+     * 
+     * @access private
+     * @global object $wpdb
+     *  It's a representant of the Database access create by WordPress.
+     * @param Offer $offer
+     *  Offer for update content and title of post in posts table.
+     * @param array $oldData
+     *  This array contains all informations needed for update the good post.
+     */
+    private function _update_post(Offer $offer, array $oldData) {
+        global $wpdb;
+        $tableName = $wpdb->prefix . 'posts';
+        $request = 'SELECT ID FROM `' . $tableName . '` WHERE `post_title` = "' . $oldData['title'] . '"';
+        $result = $wpdb->get_row($request, ARRAY_A);
+
+        $wpdb->update(
+            $tableName,
+            array(
+                'post_title' => $offer->get_title(),
+                'post_content' => $offer->get_content(),
+            ),
+            array('ID' => $result['ID']),
+            array(
+                '%s',
+                '%s',
+            ),
+            array('%d')
+        );
+    }
+    
+    /**
+     * Delete a post in table posts.
+     * 
+     * @global object $wpdb
+     *  It's a representant of the Database access create by WordPress.
+     * @param array $oldData
+     *  This array contains all informations needed for delete the good post.
+     */
+    private function _delete_post(array $oldData) {
+        global $wpdb;
+        $tableName = $wpdb->prefix . 'posts';
+        $request = 'SELECT ID FROM `' . $tableName . '` WHERE `post_title` = "' . $oldData['title'] . '"';
+        $result = $wpdb->get_row($request, ARRAY_A);
+        $wpdb->delete(
+            $tableName, 
+            array('ID' => $result['ID']), 
+            array('%d')
+        );
     }
 }

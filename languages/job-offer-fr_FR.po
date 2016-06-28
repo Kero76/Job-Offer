@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: job-offer\n"
-"POT-Creation-Date: 2016-06-24 17:23+0200\n"
-"PO-Revision-Date: 2016-06-24 17:23+0200\n"
+"POT-Creation-Date: 2016-06-28 09:40+0200\n"
+"PO-Revision-Date: 2016-06-28 09:40+0200\n"
 "Last-Translator: \n"
 "Language-Team: Nicolas GILLE <nic.gille@gmail.com>\n"
 "Language: fr_FR\n"
@@ -40,45 +40,53 @@ msgstr "Alternance"
 msgid "Save the Offer"
 msgstr "Enregistrer l&#039;offre"
 
-#: job-offer.php:175 job-offer.php:188 job-offer.php:200
+#: job-offer.php:183 job-offer.php:196 job-offer.php:208
 msgid "An error occured, please contact a developper for fix it."
 msgstr ""
 "Une erreur interne est survenue, merci de contacter le développeur pour "
 "corriger ça."
 
-#: job-offer.php:215
+#: job-offer.php:223
 msgid "Your offer was correctly inserted."
 msgstr "Votre offre a bien &eacute;t&eacute; ajout&eacute;e."
 
-#: job-offer.php:219
+#: job-offer.php:227
 msgid "Your offer was correctly deleted."
 msgstr "Votre offre a bien &eacute;t&eacute; supprim&eacute;e."
 
-#: job-offer.php:223
+#: job-offer.php:231
 msgid "Your offer was correctly updated."
 msgstr "Votre offre a bien &eacute;t&eacute; mise à jour."
 
-#: job-offer.php:313
+#: job-offer.php:325
 msgid "Title is empty."
 msgstr "Le champ Titre est vide."
 
-#: job-offer.php:314
+#: job-offer.php:326
 msgid "Content is empty."
 msgstr "Le champ Contenu est vide."
 
-#: job-offer.php:315
+#: job-offer.php:327
 msgid "Really want to delete this offer ? (This action is irreversible)"
 msgstr ""
 "Voulez vous vraiment supprimer cette offre ? (Cette action est irr&eacute;"
 "versible)"
 
-#: job-offer.php:348
+#: job-offer.php:362
 msgid "Nothing offers are currently present."
 msgstr "Aucune offres n'est actuellement disponible."
 
-#: job-offer.php:385
-msgid "No offers founds"
-msgstr "Aucune offre n&#039;a &eacute;t&eacute; trouv&eacute;e."
+#: job-offer.php:366
+msgid "Type of offers"
+msgstr "Type de contrat"
+
+#: job-offer.php:367
+msgid "Offer title"
+msgstr "Référence de l'offre"
+
+#: job-offer.php:405
+msgid "No offer found"
+msgstr "Aucune offre trouvée"
 
 #: template-add-offer-admin-page.php:13 template-update-offer-admin-page.php:17
 #: template-view-offer-admin-page.php:6
@@ -152,6 +160,9 @@ msgstr "Mettre &agrave; jour"
 #: template-view-offer-admin-page.php:36
 msgid "Delete"
 msgstr "Suppression"
+
+#~ msgid "No offers founds"
+#~ msgstr "Aucune offre n&#039;a &eacute;t&eacute; trouv&eacute;e."
 
 #~ msgid "Nothing offer present currently."
 #~ msgstr "Aucune offre n'est pr&eacute;sente en ce moment."

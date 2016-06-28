@@ -22,7 +22,7 @@ require_once('EnumType.class.php');
  *  -> Added Alternation on Enum.
  *  -> Implements Design Pattern Singleton.
  * @since Job Offer 1.0.0
- * @version 1.0.0
+ * @version 1.1.0
  */
 class Enum {
     

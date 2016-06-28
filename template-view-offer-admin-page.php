@@ -1,5 +1,5 @@
 <?php
-    $offers = $this->get_offers();
+    $offers = $this->get_offers($this->_dao->query());
 ?>
 
 <div class="wrap">
@@ -9,7 +9,7 @@
 <div>
     <h3 class="job-offer-title"><?php _e('Views all offers', 'job-offer'); ?></h3>
     <p>
-        <a href="?page=job-offer/job-offer.php&p=insert"><button class="button button-primary" ><?php _e('Add new offer', 'job-offer'); ?></button></a>
+        <a href="?page=job-offer/job-offer.php&amp;p=insert"><button class="button button-primary" ><?php _e('Add new offer', 'job-offer'); ?></button></a>
         <a href="?page=job-offer/job-offer.php"><button class="button button-primary job-offer-refresh-btn" ><?php _e('Refresh page', 'job-offer'); ?></button></a>
     </p>
     <?php 
@@ -32,8 +32,8 @@
                     echo '<td>' . $offer->get_id() . '</td>';
                     echo '<td><div class="' . str_replace(' ', '_', strtolower($offer->get_type()->get_key())) . '">' . $offer->get_type()->get_key()  . '</div></td>';
                     echo '<td>' . stripslashes($offer->get_title()) . '</td>';
-                    echo '<td><a href="?page=job-offer/job-offer.php&p=update&amp;id=' . $offer->get_id() . '"><button class="button button-primary">' . __('Update', 'job-offer')  . '</button></a></td>';
-                    echo '<td><a class="job-offer-button-deletion" href="?page=job-offer/job-offer.php&action=deleteoffer&amp;id=' . $offer->get_id() . '"><button class="button button-primary">' . __('Delete', 'job-offer') . '</button></a></td>';
+                    echo '<td><a href="?page=job-offer/job-offer.php&amp;p=update&amp;id=' . $offer->get_id() . '"><button class="button button-primary">' . __('Update', 'job-offer')  . '</button></a></td>';
+                    echo '<td><a class="job-offer-button-deletion" href="?page=job-offer/job-offer.php&amp;action=deleteoffer&amp;id=' . $offer->get_id() . '"><button class="button button-primary">' . __('Delete', 'job-offer') . '</button></a></td>';
                     echo '<td><input type="text" name="jo_shortcode" id="jo_shortcode_' . $offer->get_id() . '" value="[jo_job id=&quot;' . $offer->get_id() . '&quot; ]" /></td>';
                     echo '</tr>';
                 }

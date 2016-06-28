@@ -63,6 +63,8 @@ if (!class_exists('JobOffer')) {
      * This class is the main class of plugin. 
      * In fact, it centralize all methods which enable to run the plugin.
      * 
+     * @since Job Offer 1.1.1
+     *  -> Fixed url writting with &amp; insteand of &.
      * @since Job Offer 1.1.0
      *  -> Added class Sanitizer for sanitize href value on shortcode_all_offers() method.
      *  -> Autogenerate good link bewteen all offers page and individual page.
@@ -73,7 +75,7 @@ if (!class_exists('JobOffer')) {
      *  -> Creation of private method _update_offer($id, $title, $content, $type).
      *  -> Modify function shortcode_all_offers for generate a link for see all informations about offers.
      * @since Job Offer 1.0.0
-     * @version 1.1.0
+     * @version 1.1.1
      */
     class JobOffer {
         
@@ -237,6 +239,10 @@ if (!class_exists('JobOffer')) {
             }
        }
        
+        /**********************************************/
+        /*            GET OFFERS SECTION              */
+        /**********************************************/
+       
         /**
          * Return all offers from Database.
          * 
@@ -244,14 +250,16 @@ if (!class_exists('JobOffer')) {
          * When it create the array, create a new Offer object for each entry.
          * Then, return the array with all Offers presents in Database.
          * 
+         * @param array $request
+         *  Request issue from Database query.
          * @return array
          *   An array who composed by Offer Object.
          */
-        public function get_offers() {
-            $offers = $this->_dao->query();
+        public function get_offers(array $request) {
+            $offers = $request;
             $enum = Enum::get_instance();
             $results = array();
-            foreach($offers as $offer) {                
+            foreach($offers as $offer) {
                 $data = array(
                     'id' => $offer['id'],
                     'title' => $offer['title'],
@@ -345,34 +353,27 @@ if (!class_exists('JobOffer')) {
         /**
          * Return all offers.
          * 
-         * This method is used for displaying all offers present 
-         * in database.
+         * This method is used for displaying all offers present in database.
          * It used for generate a shortcode who placed on post page.
          * Use class Sanitizer for sanitize href link and auto-create good link for see 
          * more informations abouts offers.
          */
         public function shortcode_all_offers() {
-            $offers = $this->get_offers();
-            
+            $offers = $this->get_offers($this->_dao->get_publish_post());
+                        
             if (count($offers) == 0) {
                 $str = '<p>' . __('Nothing offers are currently present.') . '</p>';
             } else {
                 $str = '<table>';
                 $str .= '<tr>';
-                $str .= '<th>Type of offers</th>';
-                $str .= '<th>Title</th>';
+                $str .= '<th>' . __('Type of offers', 'job-offer') . '</th>';
+                $str .= '<th>' . __('Offer title', 'job-offer') . '</th>';
                 $str .= '</tr>';
-                
-                if (class_exists('Sanitizer')) {
-                    $sanitizer = new Sanitizer('');
-                }
 
                 foreach($offers as $offer) {
-                    $sanitizer->set_string($offer->get_title());
-                    $sanitizer->sanitize_post_name();
                     $str .= '<tr>';
                     $str .= '<td><div class="' . str_replace(' ', '_', strtolower($offer->get_type()->get_key())) . '">' . $offer->get_type()->get_key()  . '</div></td>';
-                    $str .= '<td><a class="job-offer-link" href="' . $sanitizer->get_string() . '">' . stripslashes($offer->get_title()) . '</a></td>';
+                    $str .= '<td><a class="job-offer-link" href="' . sanitize_title($offer->get_title()) . '">' . stripslashes($offer->get_title()) . '</a></td>';
                     $str .= '<input type="hidden" value="' . $offer->get_id() . '" id="jo_id" name="jo_id" />';
                     $str .= '</tr>';
                 }
@@ -398,7 +399,7 @@ if (!class_exists('JobOffer')) {
                 $str = '<h2 id="job-offer-title-post">' . stripslashes($offer->get_title()) . '</h2>';
                 $str .= '<p id="job-offer-content-post>' . stripslashes($offer->get_content()) . '</p>';
            } else {
-               $str = '<p>' . __('No offers founds') . '</p>';
+               $str = '<p>' . __('No offer found') . '</p>';
            }
            return $str;
        }
