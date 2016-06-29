@@ -2,8 +2,8 @@
 /*
 Plugin Name: Job Offer
 Plugin URI: 
-Description: This plugin is used for create job or traineership offer for your website.
-Version: 1.1.0
+Description: This plugin is used for create job or traineership offer for your website. In fact, lot of companies website wish create job or traineeship offer for recrut. So thanks Job Offer, these societies can generate directly offers on their website.
+Version: 1.1.2
 Author: Nicolas GILLE
 Author URI:
 Licence: GPLv2+ or later
@@ -50,11 +50,6 @@ require_once('classes/DAO.class.php');
  */
 require_once('classes/Offer.class.php');
 
-/**
- * Include Sanitize class for sanitize link on job offer list.
- */
-require_once('classes/Sanitizer.class.php');
-
 if (!class_exists('JobOffer')) {
 
     /**
@@ -63,6 +58,9 @@ if (!class_exists('JobOffer')) {
      * This class is the main class of plugin. 
      * In fact, it centralize all methods which enable to run the plugin.
      * 
+     * @since Job OFfer 1.1.2
+     *  -> Removed Sanitizer class include because unused now.
+     *  -> Register specific type of post for Job Offer.
      * @since Job Offer 1.1.1
      *  -> Fixed url writting with &amp; insteand of &.
      * @since Job Offer 1.1.0
@@ -75,7 +73,7 @@ if (!class_exists('JobOffer')) {
      *  -> Creation of private method _update_offer($id, $title, $content, $type).
      *  -> Modify function shortcode_all_offers for generate a link for see all informations about offers.
      * @since Job Offer 1.0.0
-     * @version 1.1.1
+     * @version 1.1.2
      */
     class JobOffer {
         
@@ -101,6 +99,7 @@ if (!class_exists('JobOffer')) {
                 add_action('admin_enqueue_scripts', array($this, 'register_stylesheet'));
                 add_action('admin_enqueue_scripts', array($this, 'register_scripts'));
                 add_action('plugins_loaded', array($this, 'load_textdomain'));
+                add_action('init', array($this, 'register_custom_type_post'));
             }
             if (function_exists('add_shortcode')) {
                 add_shortcode('jo_jobs', array($this, 'shortcode_all_offers'));
@@ -335,6 +334,42 @@ if (!class_exists('JobOffer')) {
         }
         
         /**
+         * Register a new type of post on WordPress.
+         * 
+         * This methid register a new type of post named Offers.
+         */
+        public function register_custom_type_post() {
+            if (function_exists(register_post_type)) {
+                register_post_type('job-offer', array(
+                    'labels' => array(
+                        'name'                  => __('Offers', 'job-offer'),
+                        'singular_name'         => __('Offer', 'job-offer'),
+                        'name_admin_bar'        => __('Offers', 'job-offer'),
+                        'add_new'               => __('Add new Offer', 'job-offer'),
+                        'add_new_item'          => __('Add new Offer', 'job-offer'),
+                        'new_item'              => __('New Offer', 'job-offer'),
+                        'edit_item'             => __('Edit Offer', 'job-offer'),
+                        'view_new'              => __('View Offer', 'job-offer'),
+                        'all_items'             => __('All Offers', 'job-offer'),
+                        'parent_item_colon'     => __('Parent Offers:', 'job-offer'),
+                        'search_items'          => __('Search Offers', 'job-offer'),
+                        'not_found'             => __('No offers found', 'job-offer'),
+                        'not_found_in_trash'    => __('No offers found in Trash', 'job-offer'),
+                    ),
+                    'description'       => __('Job or Traineeship offers.', 'job-offer'),
+                    'public'            => true,
+                    'query_var'         => true,
+                    'rewrite'           => array('slug' => 'offer', 'with_front' => false, 'feed' => false),
+                    'capability_type'   => 'post',
+                    'menu_position'     => null,
+                    'supports'          => array('title', 'editor', 'post-formats'),
+                    'menu_icon'         => 'dashicons-businessman',
+                ));
+                $this->flush_rewrite_rules();
+            }
+        }
+        
+        /**
          * Loaded textdomain for translations.
          * 
          * This method load textdomain for add translations.
@@ -343,6 +378,17 @@ if (!class_exists('JobOffer')) {
         public function load_textdomain() {
             if (function_exists('load_plugin_textdomain')) {
                 load_plugin_textdomain('job-offer', false, dirname(plugin_basename(__FILE__)) . '/languages');
+            }
+        }
+        
+        /**
+         * Flush rewrite rules.
+         * 
+         * This method flush current rewrite rules and add rules about Job Offer.
+         */
+        public function flush_rewrite_rules() {
+            if(function_exists('flush_rewrite_rules')) {
+                flush_rewrite_rules();
             }
         }
         
@@ -355,8 +401,6 @@ if (!class_exists('JobOffer')) {
          * 
          * This method is used for displaying all offers present in database.
          * It used for generate a shortcode who placed on post page.
-         * Use class Sanitizer for sanitize href link and auto-create good link for see 
-         * more informations abouts offers.
          */
         public function shortcode_all_offers() {
             $offers = $this->get_offers($this->_dao->get_publish_post());
@@ -434,7 +478,7 @@ if (!class_exists('JobOffer')) {
             $offerType = $enum->get_enum()[$type];
             $data = array(
                 'id' => intval($id),
-                'title' => sanitize_text_field($title),
+                'title' => stripslashes($title),
                 'content' => $content,
                 'type' => $offerType,
             );
@@ -490,4 +534,5 @@ if (class_exists('JobOffer')) {
  */
 if (isset($jobOffer)) {
     register_activation_hook(__FILE__, array($jobOffer, 'install'));
+    register_activation_hook(__FILE__, array($jobOffer, 'flush_rewrite_rules'));
 }

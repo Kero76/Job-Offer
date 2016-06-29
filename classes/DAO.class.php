@@ -6,15 +6,16 @@
 require_once('Enum.class.php');
 
 /**
- * Includes Sanitizer class for sanitize post name before insert it into Database.
- */
-require_once('Sanitizer.class.php');
-
-/**
  * This class represent the connexion between the model and the view.
  * She implement the Design Pattern Singleton because only one connexion with the Database
  * are necessary for running the plugin and avoid to create at each time an object DAO.
  * 
+ * @since Job Offer 1.1.2
+ *  -> Added post_type option on _insert_post() method.
+ *  -> Fixed update and delete post method.
+ *  -> Fixed method get_publish_post() with custom post type.
+ *  -> Removed Sanitizer class include because this class is unused now.
+ *  -> Added $_job_offer_table_name who represent the name of Job Offer table.
  * @since Job Offer 1.1.1
  *  -> Added method get_publish_post() for retrieve only the post with publish status for display it on front page.
  *  -> Moved insert, update and delete wordpress posts table in private function.
@@ -27,7 +28,7 @@ require_once('Sanitizer.class.php');
  *  -> Added ORDER BY id ASC into query method.
  *  -> Creation, deletion and update wp_posts table for create post for each Offer from custom table.
  * @since Job Offer 1.0.0
- * @version 1.1.2
+ * @version 1.1.3
  */
 class DAO {
     
@@ -41,12 +42,24 @@ class DAO {
      */
     private static $_instance = null;
     
+    /**
+     * This is the name of the job offer table.
+     * 
+     * @access private
+     * @var string
+     *  Job offer table named.
+     */
+    private $_job_offer_table_name;
+    
     
     /**
      * Empty constructor only create for private visibility.
      * @access private
      */
-    private function __construct() {}
+    private function __construct() {
+        global $wpdb;
+        $this->_job_offer_table_name = $wpdb->prefix . 'job_offer';
+    }
     
    
     /**
@@ -82,12 +95,11 @@ class DAO {
      */
     public function query($id = -1) {
         global $wpdb;
-        $tableName = $wpdb->prefix . 'job_offer';
         if ($id == -1) {
-            $sql = 'SELECT * FROM ' . $tableName . ' ORDER BY id ASC';
+            $sql = 'SELECT * FROM ' . $this->_job_offer_table_name . ' ORDER BY id ASC';
             return $wpdb->get_results($sql, ARRAY_A);   
         } else {
-            $sql = 'SELECT * FROM ' . $tableName . ' WHERE id = ' . $id;
+            $sql = 'SELECT * FROM ' . $this->_job_offer_table_name . ' WHERE id = ' . $id;
             return $wpdb->get_row($sql, ARRAY_A);   
         }
     }
@@ -107,12 +119,11 @@ class DAO {
      */
     public function insert(Offer $offer) {
         global $wpdb;
-        $tableName = $wpdb->prefix . 'job_offer';
         $enum = Enum::get_instance();       
         $idType = $enum->get_id_by_key($offer->get_type()->get_key());
         
         $sql = $wpdb->insert(
-            $tableName,
+            $this->_job_offer_table_name,
             array(
                 'id' => $offer->get_id(),
                 'title' => $offer->get_title(),
@@ -150,14 +161,13 @@ class DAO {
      */
     public function update(Offer $offer) {
         global $wpdb;
-        $tableName = $wpdb->prefix . 'job_offer';
         $enum = Enum::get_instance();       
         $idType = $enum->get_id_by_key($offer->get_type()->get_key());        
         
         $oldData = $this->query($offer->get_id());
         
         $sql = $wpdb->update(
-            $tableName,
+            $this->_job_offer_table_name,
             array(
                 'title' => $offer->get_title(),
                 'content' => $offer->get_content(),
@@ -195,12 +205,11 @@ class DAO {
      */
     public function delete($id) {
         global $wpdb;
-        $tableName = $wpdb->prefix . 'job_offer';
         
         $oldData = $this->query($id);
         
         $sql = $wpdb->delete(
-            $tableName, 
+            $this->_job_offer_table_name, 
             array('id' => $id), 
             array('%d')
         );
@@ -221,8 +230,7 @@ class DAO {
      */
     public function get_max_id() {
         global $wpdb;
-        $tableName = $wpdb->prefix . 'job_offer';
-        $max = $wpdb->get_row("SELECT MAX(id) AS max FROM " . $tableName, ARRAY_A);
+        $max = $wpdb->get_row("SELECT MAX(id) AS max FROM " . $this->_job_offer_table_name, ARRAY_A);
         return $max['max'];
     }
     
@@ -237,23 +245,81 @@ class DAO {
      */
     public function get_publish_post() {
         global $wpdb;
-        $job_offer_table = $wpdb->prefix. 'job_offer';
         $post_table = $wpdb->prefix . 'posts';
         
         $parameters = array(
-            'jo_id'         => $job_offer_table . '.id',
-            'jo_title'      => $job_offer_table . '.title',
-            'jo_content'    => $job_offer_table . '.type',
+            'jo_id'         => $this->_job_offer_table_name . '.id',
+            'jo_title'      => $this->_job_offer_table_name . '.title',
+            'jo_type'       => $this->_job_offer_table_name . '.type',
             'post_title'    => $post_table . '.post_title',
         );
         
-        $sql = "SELECT " . $parameters['jo_id'] . ", " . $parameters['jo_title'] . ", " . $parameters['jo_content'] .
-                " FROM " . $job_offer_table . 
+        $sql = "SELECT " . $parameters['jo_id'] . ", " . $parameters['jo_title'] . ", " . $parameters['jo_type'] .
+                " FROM " . $this->_job_offer_table_name . 
                 " JOIN " . $post_table . 
                 " ON "   . $parameters['post_title'] . " = " . $parameters['jo_title'] .
-                " WHERE `post_status` = 'publish' ORDER BY " . $parameters['jo_id'] . " ASC";
+                " WHERE `post_status` = 'publish' AND `post_type` = \"job-offer\" ORDER BY " . $parameters['jo_id'] . " ASC";
         
         return $wpdb->get_results($sql, ARRAY_A);
+    }
+    
+    /**
+     * Return the id from job_offer table after a post id from posts table.
+     * 
+     * @global object $wpdb
+     *  It's a representant of the Database access create by WordPress.
+     * @param integer $post_id
+     *  The post id who represent offers in website.
+     */
+    public function get_id_by_post_id($post_id) {
+        global $wpdb;
+        $post_table = $wpdb->prefix . 'posts';
+        
+        $parameters = array(
+            'jo_id'         => $this->_job_offer_table_name . '.id',
+            'jo_title'      => $this->_job_offer_table_name . '.title',
+            'post_title'    => $post_table . '.post_title',
+            'post_id'       => $post_table . '.ID',
+        );
+        
+        $sql = "SELECT " . $parameters['jo_id'] . " FROM " . $this->_job_offer_table_name . 
+               " JOIN " . $post_table . 
+               " ON " . $parameters['jo_title'] . " = " . $parameters['post_title'] . 
+               " WHERE " . $parameters['post_id'] . " = " . $post_id;
+        
+        return $wpdb->get_row($sql, ARRAY_A);
+    }
+    
+    /**
+     * Update title and content after updating post entry.
+     * 
+     * This method update Job Offer table in Database.
+     * It fired after an update of post which representing offer on front.
+     * 
+     * @global object $wpdb
+     *  It's a representant of the Database access create by WordPress.
+     * @param integer $id
+     *  Id of offer.
+     * @param string $title
+     *  Title of offer.
+     * @param string $content
+     *  Content of offer.
+     */
+    public function update_title_and_content_jbdb($id, $title, $content) {
+        global $wpdb;
+        $sql = $wpdb->update(
+            $this->_job_offer_table_name,
+            array(
+                'title' => $title,
+                'content' => $content,
+            ),
+            array('id' => $id),
+            array(
+                '%s',
+                '%s',
+            ),
+            array('%d')
+        );
     }
     
     /**********************************************/
@@ -276,32 +342,16 @@ class DAO {
         } else {
             $id_user = 1;
         }
-
-        $post_name = '';
-        if (class_exists('Sanitizer')) {
-            $sanitizer = new Sanitizer($offer->get_title());
-            $sanitizer->sanitize_post_name();
-            $post_name = $sanitizer->get_string();
-        }
-
-        if ($post_name != '') {
-            $post = array(
-                'post_title'        => $offer->get_title(),
-                'post_content'      => $offer->get_content(),
-                'post_name'         => $post_name,
-                'post_status'       => 'pending',
-                'post_author'       => $id_user,
-                'comment_status'    => 'closed',
-            );
-        } else {
-            $post = array(
-                'post_title'        => $offer->get_title(),
-                'post_content'      => $offer->get_content(),
-                'post_status'       => 'pending',
-                'post_author'       => $id_user,
-                'comment_status'    => 'closed',
-            ); 
-        }
+        
+        $post = array(
+            'post_title'        => $offer->get_title(),
+            'post_content'      => $offer->get_content(),
+            'post_name'         => sanitize_title($offer->get_title()),
+            'post_status'       => 'pending',
+            'post_author'       => $id_user,
+            'comment_status'    => 'closed',
+            'post_type'         => 'job-offer',
+        );
         wp_insert_post($post);
     }
     
@@ -321,23 +371,17 @@ class DAO {
      */
     private function _update_post(Offer $offer, array $oldData) {
         global $wpdb;
-        $tableName = $wpdb->prefix . 'posts';
-        $request = 'SELECT ID FROM `' . $tableName . '` WHERE `post_title` = "' . $oldData['title'] . '"';
+        $post_table_name = $wpdb->prefix . 'posts';
+        $request = 'SELECT ID FROM `' . $post_table_name . '` WHERE `post_name` = "' . sanitize_title($oldData['title']) . '"';
         $result = $wpdb->get_row($request, ARRAY_A);
-
-        $wpdb->update(
-            $tableName,
-            array(
-                'post_title' => $offer->get_title(),
-                'post_content' => $offer->get_content(),
-            ),
-            array('ID' => $result['ID']),
-            array(
-                '%s',
-                '%s',
-            ),
-            array('%d')
+        
+        $post = array(
+            'ID'            => $result['ID'],
+            'post_title'    => $offer->get_title(),
+            'post_content'  => $offer->get_content(),
+            'post_name'     => sanitize_title($offer->get_title()),
         );
+        wp_update_post($post);
     }
     
     /**
@@ -350,13 +394,9 @@ class DAO {
      */
     private function _delete_post(array $oldData) {
         global $wpdb;
-        $tableName = $wpdb->prefix . 'posts';
-        $request = 'SELECT ID FROM `' . $tableName . '` WHERE `post_title` = "' . $oldData['title'] . '"';
+        $post_table_name = $wpdb->prefix . 'posts';
+        $request = 'SELECT ID FROM `' . $post_table_name . '` WHERE `post_name` = "' . sanitize_title($oldData['title']) . '" AND `post_type` = "job-offer"';
         $result = $wpdb->get_row($request, ARRAY_A);
-        $wpdb->delete(
-            $tableName, 
-            array('ID' => $result['ID']), 
-            array('%d')
-        );
+        wp_delete_post($result['ID'], true);
     }
 }
