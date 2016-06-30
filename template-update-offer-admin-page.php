@@ -6,8 +6,25 @@
     $form = new Form();
     $enum = Enum::get_instance();
     
-    if (!isset($_GET['id]'])) 
-        $offer = $this->get_offer($_GET['id']);
+    /*
+     * Verification of $_GET value exist and not empty.
+     * Retrieve offer from Databsae.
+     * Search post title and post offer thanks to offer id.
+     * Create real offer with type and id from job_offer table
+     * and title and content from wp_posts table.
+     */
+    if (!isset($_GET['id]'])) {
+        $db_offer = $this->get_offer($_GET['id']);
+        $post_id = $this->_dao->get_post_id_by_offer_id($db_offer->get_id());
+        $post_offer = $this->_dao->get_post_elements($post_id);
+    
+        $offer = new Offer(array(
+            'id'        => $db_offer->get_id(),
+            'title'     => $post_offer['post_title'],
+            'content'   => $post_offer['post_content'],
+            'type'      => $db_offer->get_type(),
+        ));
+    }
 
     /* Options for textarea */
     $rows = 15;

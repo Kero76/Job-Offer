@@ -3,7 +3,7 @@
 Plugin Name: Job Offer
 Plugin URI: 
 Description: This plugin is used for create job or traineership offer for your website. In fact, lot of companies website wish create job or traineeship offer for recrut. So thanks Job Offer, these societies can generate directly offers on their website.
-Version: 1.1.2
+Version: 1.2.0
 Author: Nicolas GILLE
 Author URI:
 Licence: GPLv2+ or later

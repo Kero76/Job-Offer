@@ -10,6 +10,8 @@ require_once('Enum.class.php');
  * She implement the Design Pattern Singleton because only one connexion with the Database
  * are necessary for running the plugin and avoid to create at each time an object DAO.
  * 
+ * @since Job Offer 1.2.0
+ *  -> Added new methods for retrieve post id thanks to offer id and retrieve post title and post content thanks to post id.
  * @since Job Offer 1.1.2
  *  -> Added post_type option on _insert_post() method.
  *  -> Fixed update and delete post method.
@@ -28,7 +30,7 @@ require_once('Enum.class.php');
  *  -> Added ORDER BY id ASC into query method.
  *  -> Creation, deletion and update wp_posts table for create post for each Offer from custom table.
  * @since Job Offer 1.0.0
- * @version 1.1.3
+ * @version 1.1.4
  */
 class DAO {
     
@@ -38,7 +40,7 @@ class DAO {
      * @access private
      * @static
      * @var object
-     *  Represent this.
+     *  Represent the instance of DAO class.
      */
     private static $_instance = null;
     
@@ -54,6 +56,7 @@ class DAO {
     
     /**
      * Empty constructor only create for private visibility.
+     * 
      * @access private
      */
     private function __construct() {
@@ -227,6 +230,8 @@ class DAO {
      * 
      * @global object $wpdb
      *  It's a representant of the Database access create by WordPress.
+     * @return integer
+     *  
      */
     public function get_max_id() {
         global $wpdb;
@@ -242,6 +247,8 @@ class DAO {
      * 
      * @global object $wpdb
      *  It's a representant of the Database access create by WordPress.
+     * @return array
+     *  All post with 'publish' status.
      */
     public function get_publish_post() {
         global $wpdb;
@@ -270,6 +277,8 @@ class DAO {
      *  It's a representant of the Database access create by WordPress.
      * @param integer $post_id
      *  The post id who represent offers in website.
+     * @return integer
+     *  Offer id.
      */
     public function get_id_by_post_id($post_id) {
         global $wpdb;
@@ -278,8 +287,8 @@ class DAO {
         $parameters = array(
             'jo_id'         => $this->_job_offer_table_name . '.id',
             'jo_title'      => $this->_job_offer_table_name . '.title',
-            'post_title'    => $post_table . '.post_title',
             'post_id'       => $post_table . '.ID',
+            'post_title'    => $post_table . '.post_title',
         );
         
         $sql = "SELECT " . $parameters['jo_id'] . " FROM " . $this->_job_offer_table_name . 
@@ -287,39 +296,56 @@ class DAO {
                " ON " . $parameters['jo_title'] . " = " . $parameters['post_title'] . 
                " WHERE " . $parameters['post_id'] . " = " . $post_id;
         
-        return $wpdb->get_row($sql, ARRAY_A);
+        $id = $wpdb->get_row($sql, ARRAY_A);
+        return $id['id'];
     }
     
     /**
-     * Update title and content after updating post entry.
-     * 
-     * This method update Job Offer table in Database.
-     * It fired after an update of post which representing offer on front.
+     * Return post id thanks to an offer id.
      * 
      * @global object $wpdb
      *  It's a representant of the Database access create by WordPress.
-     * @param integer $id
-     *  Id of offer.
-     * @param string $title
-     *  Title of offer.
-     * @param string $content
-     *  Content of offer.
+     * @param int $offer_id
+     *  The offer id used in WHERE condition.
+     * @return integer
+     *  ID of offer post.
      */
-    public function update_title_and_content_jbdb($id, $title, $content) {
+    public function get_post_id_by_offer_id($offer_id) {
         global $wpdb;
-        $sql = $wpdb->update(
-            $this->_job_offer_table_name,
-            array(
-                'title' => $title,
-                'content' => $content,
-            ),
-            array('id' => $id),
-            array(
-                '%s',
-                '%s',
-            ),
-            array('%d')
+        $post_table = $wpdb->prefix . 'posts';
+        
+        $parameters = array(
+            'jo_id'         => $this->_job_offer_table_name . '.id',
+            'jo_title'      => $this->_job_offer_table_name . '.title',
+            'post_id'       => $post_table . '.ID',
+            'post_title'    => $post_table . '.post_title',
+            'post_content'  => $post_table . '.post_content',
         );
+        
+        $sql = "SELECT " . $parameters['post_id'] . " FROM " . $post_table . 
+               " JOIN " . $this->_job_offer_table_name . 
+               " ON " . $parameters['jo_title'] . " = " . $parameters['post_title'] . 
+               " WHERE " . $parameters['jo_id'] . " = " . $offer_id;
+        
+        $id = $wpdb->get_row($sql, ARRAY_A);
+        return $id['ID'];
+    }
+    
+    /**
+     * Return title and content post thanks to the ID.
+     * 
+     * @global object $wpdb
+     *  It's a representant of the Database access create by WordPress.
+     * @param integer $post_id
+     *  ID of post who search for return title and content.
+     * @return array
+     *  Title and content of offer post.
+     */
+    public function get_post_elements($post_id) {
+        global $wpdb;
+        $post_table = $wpdb->prefix . 'posts';
+        $sql = "SELECT post_title, post_content FROM " . $post_table . " WHERE ID = " . $post_id;
+        return $wpdb->get_row($sql, ARRAY_A);
     }
     
     /**********************************************/

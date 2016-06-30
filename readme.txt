@@ -4,7 +4,7 @@ Donate link:
 Tags: job, jobs, offer, offers, traineeship
 Requires at least: 4.5
 Tested up to: 4.5
-Stable tag: 1.1.2
+Stable tag: 1.2.0
 License: Licence GPLv2 or Later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,6 +26,8 @@ For more information, contact developer (Nicolas GILLE <nic.gille@gmail.com>).
 * Generate list of all offers present in database and redirect users on offer's information.
 * Use shortcodes for generate one offer information if you like, for customised style for example.
 * See directly and auto select shortcode beside all offers view.
+* Modification of offer thanks to Offer post. 
+*   /!\ Not change offer title here, modified it only in Job Offer setting.
 
 = Usage: =
 
@@ -64,6 +66,9 @@ No questions yet.
 Nothing here for the moment.
 
 == Changelog ==
+
+= 1.2.0 =
+Possibility to update an offer on post offer section and return modification on Job Offer setting.
 
 = 1.1.2 =
 Fixed update and delete for post. Now you can create, modify and delete every offer thanks to Job Offer settings.
