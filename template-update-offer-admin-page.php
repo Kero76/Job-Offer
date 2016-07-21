@@ -19,10 +19,11 @@
         $post_offer = $this->_dao->get_post_elements($post_id);
     
         $offer = new Offer(array(
-            'id'        => $db_offer->get_id(),
-            'title'     => $post_offer['post_title'],
-            'content'   => $post_offer['post_content'],
-            'type'      => $db_offer->get_type(),
+            'id'         => $db_offer->get_id(),
+            'title'      => $post_offer['post_title'],
+            'content'    => $post_offer['post_content'],
+            'type'       => $db_offer->get_type(),
+            'visibility' => $db_offer->get_visibility(),
         ));
     }
 
@@ -51,6 +52,11 @@
             <tr>
                 <th><label for="jo_type"><?php _e('Type', 'job-offer'); ?></label></th>
                 <td><?php echo $form->get_type_offer_form($enum, $offer->get_type()); ?></td>
+            </tr>
+            
+            <tr>
+                <th><label for="jo_visibility"><?php _e('Visible', 'job_offer'); ?></label></th>
+                <td><?php echo $form->get_visibility_form($offer->get_visibility()); ?></td>
             </tr>
             
             <tr>

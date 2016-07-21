@@ -7,10 +7,13 @@
  *  - Title : Title of an offer.
  *  - Content : Content of an offer.
  *  - Type : Sort of offer like Traineeship, Fill-Time, Permanent Position, ...
+ *  - visibility : Visibility of an offer.
  * When you work with an offer, you used only an Offer object for manipulate data about an offer.
  * 
+ * @since Job Offer 1.2.1
+ *  -> Added visibility attributes and getter and setter corresponding.
  * @since Job Offer 1.0.0
- * @version 1.0.0
+ * @version 1.1.0
  */
 class Offer {
     
@@ -50,6 +53,16 @@ class Offer {
      *  Type of offer.
      */
     private $_type;
+    
+    
+    /**
+     * Visibility of the offer.
+     *
+     * @access private
+     * @var bool
+     *  Visibility of the offer. 
+     */
+    private $_visibility;
     
     /**
      * Constuctor of an Offer.
@@ -127,6 +140,16 @@ class Offer {
     public function get_type() {
         return $this->_type;
     }
+    
+    /**
+     * Return the visibility of the current offer.
+     * 
+     * @return bool
+     *  Return the current state of visibility.
+     */
+    public function get_visibility() {
+        return $this->_visibility;
+    }
      
     /**
      * Set id of current offer.
@@ -152,7 +175,7 @@ class Offer {
     
     /**
      * Set content of current offer.
-     * Replace the current content by new cpntent, or asign the value from the Database.
+     * Replace the current content by new cpntent, or assign the value from the Database.
      * 
      * @param string $content
      *  Value of content.
@@ -163,7 +186,7 @@ class Offer {
     
     /**
      * Set type of current offer. 
-     * Replace type of offer by another EnumType, or asign the value from the Database.
+     * Replace type of offer by another EnumType, or assign the value from the Database.
      * We verify in the first step if the type passed on parameter is a EnumTYpe.
      * If the parameter isn't a EnumTYpe, the type isn't modify.
      * 
@@ -173,6 +196,17 @@ class Offer {
     public function set_type(EnumType $type) {
         if ($type instanceof EnumType)
             $this->_type = $type;
+    }
+    
+    /**
+     * Set visibility of the current offer..
+     * Replace the current visibility by new visibility or assign the value from the Database.
+     * 
+     * @param bool $visibility
+     *  True if the offer is show. False if the offer is hide.
+     */
+    public function set_visibility($visibility) {
+        $this->_visibility = $visibility;
     }
     
     /**

@@ -3,7 +3,7 @@
 Plugin Name: Job Offer
 Plugin URI: 
 Description: This plugin is used for create job or traineership offer for your website. In fact, lot of companies website wish create job or traineeship offer for recrut. So thanks Job Offer, these societies can generate directly offers on their website.
-Version: 1.2.0
+Version: 1.2.1
 Author: Nicolas GILLE
 Author URI:
 Licence: GPLv2+ or later
@@ -58,6 +58,9 @@ if (!class_exists('JobOffer')) {
      * This class is the main class of plugin. 
      * In fact, it centralize all methods which enable to run the plugin.
      * 
+     * @since Job Offer 1.2.1
+     *  -> Added visibility range in job_offer table creation.
+     *  -> Added parameter visibility in all functions using DAO functions.
      * @since Job OFfer 1.1.2
      *  -> Removed Sanitizer class include because unused now.
      *  -> Register specific type of post for Job Offer.
@@ -140,7 +143,8 @@ if (!class_exists('JobOffer')) {
                     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
                     `title` VARCHAR(255) NOT NULL,
                     `content` TEXT NOT NULL,
-                    `type` INT NOT NULL
+                    `type` INT NOT NULL,
+                    `visibility` TINYINT(1) NOT NULL
                 )ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
                 require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
                 dbDelta($sql);
@@ -176,9 +180,9 @@ if (!class_exists('JobOffer')) {
                 
                 /** INSERT SECTION **/
                 case 'addoffer' :
-                    if (isset($_POST['jo_title'], $_POST['jo_content'], $_POST['jo_type'])) {
-                        if ((trim($_POST['jo_title']) != '') && (trim($_POST['jo_content']) != '') && (trim($_POST['jo_type']) != '')) {                  
-                            if ($this->_insert_offer($_POST['jo_title'], $_POST['jo_content'], $_POST['jo_type'])) {
+                    if (isset($_POST['jo_title'], $_POST['jo_content'], $_POST['jo_type'], $_POST['jo_visibility'])) {
+                        if ((trim($_POST['jo_title']) != '') && (trim($_POST['jo_content']) != '') && (trim($_POST['jo_type']) != '') && $_POST['jo_visibility']) {                  
+                            if ($this->_insert_offer($_POST['jo_title'], $_POST['jo_content'], $_POST['jo_type'], $_POST['jo_visibility'])) {
                                 //header('Location:' . get_bloginfo('url') . '/wp-admin/options-general.php?page=job-offer/job-offer.php&addoffer=ok');
                             } else {
                                 echo '<span class="job-offer-error job-offer-bold">' . __('An error occured, please contact a developper for fix it.', 'job-offer') . '</span>';
@@ -190,8 +194,8 @@ if (!class_exists('JobOffer')) {
                 /** UPDATE SECTION **/
                 case 'updateoffer' :
                     if (isset($_POST['jo_title'], $_POST['jo_content'], $_POST['jo_type'], $_POST['jo_id'])) {
-                        if ((trim($_POST['jo_title']) != '') && (trim($_POST['jo_content']) != '') && (trim($_POST['jo_type']) != '')) {
-                            if ($this->_update_offer($_POST['jo_id'], $_POST['jo_title'], $_POST['jo_content'], $_POST['jo_type'])) {
+                        if ((trim($_POST['jo_title']) != '') && (trim($_POST['jo_content']) != '') && (trim($_POST['jo_type'] && $_POST['jo_visibility']) != '')) {
+                            if ($this->_update_offer($_POST['jo_id'], $_POST['jo_title'], $_POST['jo_content'], $_POST['jo_type'], $_POST['jo_visibility'])) {
                                 //header('Location:' . get_bloginfo('url') . '/wp-admin/options-general.php?page=job-offer/job-offer.php&updateoffer=ok');
                             } else {
                                 echo '<span class="job-offer-error job-offer-bold">' . __('An error occured, please contact a developper for fix it.', 'job-offer') . '</span>';
@@ -260,10 +264,11 @@ if (!class_exists('JobOffer')) {
             $results = array();
             foreach($offers as $offer) {
                 $data = array(
-                    'id' => $offer['id'],
-                    'title' => $offer['title'],
-                    'content' => $offer['content'],
-                    'type' => new EnumType($enum->get_key_by_id(intval($offer['type']))),
+                    'id'         => $offer['id'],
+                    'title'      => $offer['title'],
+                    'content'    => $offer['content'],
+                    'type'       => new EnumType($enum->get_key_by_id(intval($offer['type']))),
+                    'visibility' => $offer['visibility'],
                 );
                 array_push($results, new Offer($data));
             }
@@ -286,10 +291,11 @@ if (!class_exists('JobOffer')) {
             $enum = Enum::get_instance();
             
             $data = array(
-                'id' => $offer['id'],
-                'title' => $offer['title'],
-                'content' => $offer['content'],
-                'type' => new EnumType($enum->get_key_by_id(intval($offer['type']))),
+                'id'         => $offer['id'],
+                'title'      => $offer['title'],
+                'content'    => $offer['content'],
+                'type'       => new EnumType($enum->get_key_by_id(intval($offer['type']))),
+                'visibility' => $offer['visibility'],
             );
             return new Offer($data);
         }
@@ -466,21 +472,31 @@ if (!class_exists('JobOffer')) {
         *   Content of the Offer.
         * @param integer $type
         *   Rank of the value present in Enum.
+        * @param string $visibility
+        *   Visibility of the Offer with Yes or No value.
         * @return bool
         *   The state of the request.
         */
-       private function _insert_offer($title, $content, $type) {
+       private function _insert_offer($title, $content, $type, $visibility) {
             $id = $this->_dao->get_max_id() + 1;
             if ($id == '') {
                 $id = 0;
             }
+            
+            if ($visibility === "Yes") {
+                $is_visible = true;
+            } else {
+                $is_visible = false;    
+            }
+            
             $enum = Enum::get_instance();
             $offerType = $enum->get_enum()[$type];
             $data = array(
-                'id' => intval($id),
-                'title' => stripslashes($title),
-                'content' => $content,
-                'type' => $offerType,
+                'id'         => intval($id),
+                'title'      => stripslashes($title),
+                'content'    => $content,
+                'type'       => $offerType,
+                'visibility' => $is_visible,
             );
             $offer = new Offer($data);
             return $this->_dao->insert($offer);
@@ -502,17 +518,27 @@ if (!class_exists('JobOffer')) {
         *   Content of the Offer.
         * @param integer $type
         *   Rank of the value present in Enum.
+        * @param string $visibility
+        *   Visibility of the Offer.
         * @return bool
         *   The state of the request.
         */
-       private function _update_offer($id, $title, $content, $type) {
-           $enum = Enum::get_instance();
+       private function _update_offer($id, $title, $content, $type, $visibility) {
+            $enum = Enum::get_instance();
             $offerType = $enum->get_enum()[$type];
+            
+            if ($visibility === "Yes") {
+                $is_visible = true;
+            } else {
+                $is_visible = false;    
+            }
+            
             $data = array(
-                'id' => intval($id),
-                'title' => sanitize_text_field($title),
-                'content' => $content,
-                'type' => $offerType,
+                'id'         => intval($id),
+                'title'      => sanitize_text_field($title),
+                'content'    => $content,
+                'type'       => $offerType,
+                'visibility' => $is_visible,
             );
             $offer = new Offer($data);
             return $this->_dao->update($offer);    

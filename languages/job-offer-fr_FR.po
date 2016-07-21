@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: job-offer\n"
-"POT-Creation-Date: 2016-06-29 13:54+0200\n"
-"PO-Revision-Date: 2016-06-29 13:57+0200\n"
+"POT-Creation-Date: 2016-07-21 16:42+0200\n"
+"PO-Revision-Date: 2016-07-21 16:42+0200\n"
 "Last-Translator: \n"
 "Language-Team: Nicolas GILLE <nic.gille@gmail.com>\n"
 "Language: fr_FR\n"
@@ -36,107 +36,115 @@ msgstr "Stage"
 msgid "Alternation"
 msgstr "Alternance"
 
-#: classes/Form.class.php:106
+#: classes/Form.class.php:111 classes/Form.class.php:114
+msgid "Yes"
+msgstr "Oui"
+
+#: classes/Form.class.php:112 classes/Form.class.php:115
+msgid "No"
+msgstr "Non"
+
+#: classes/Form.class.php:129
 msgid "Save the Offer"
 msgstr "Enregistrer l&#039;offre"
 
-#: job-offer.php:186 job-offer.php:199 job-offer.php:211
+#: job-offer.php:188 job-offer.php:201 job-offer.php:213
 msgid "An error occured, please contact a developper for fix it."
 msgstr ""
 "Une erreur interne est survenue, merci de contacter le développeur pour "
 "corriger ça."
 
-#: job-offer.php:226
+#: job-offer.php:228
 msgid "Your offer was correctly inserted."
 msgstr "Votre offre a bien &eacute;t&eacute; ajout&eacute;e."
 
-#: job-offer.php:230
+#: job-offer.php:232
 msgid "Your offer was correctly deleted."
 msgstr "Votre offre a bien &eacute;t&eacute; supprim&eacute;e."
 
-#: job-offer.php:234
+#: job-offer.php:236
 msgid "Your offer was correctly updated."
 msgstr "Votre offre a bien &eacute;t&eacute; mise à jour."
 
-#: job-offer.php:330
+#: job-offer.php:334
 msgid "Title is empty."
 msgstr "Le champ Titre est vide."
 
-#: job-offer.php:331
+#: job-offer.php:335
 msgid "Content is empty."
 msgstr "Le champ Contenu est vide."
 
-#: job-offer.php:332
+#: job-offer.php:336
 msgid "Really want to delete this offer ? (This action is irreversible)"
 msgstr ""
 "Voulez vous vraiment supprimer cette offre ? (Cette action est irr&eacute;"
 "versible)"
 
-#: job-offer.php:346 job-offer.php:348
+#: job-offer.php:351 job-offer.php:353
 msgid "Offers"
 msgstr "Offres"
 
-#: job-offer.php:347
+#: job-offer.php:352
 msgid "Offer"
 msgstr "Offre"
 
-#: job-offer.php:349 job-offer.php:350
+#: job-offer.php:354 job-offer.php:355
 msgid "Add new Offer"
 msgstr "Ajouter une nouvelle offre"
 
-#: job-offer.php:351
+#: job-offer.php:356
 msgid "New Offer"
 msgstr "Nouvelle offre"
 
-#: job-offer.php:352
+#: job-offer.php:357
 msgid "Edit Offer"
 msgstr "Editer une offre"
 
-#: job-offer.php:353
+#: job-offer.php:358
 msgid "View Offer"
 msgstr "Voir une offre"
 
-#: job-offer.php:354
+#: job-offer.php:359
 msgid "All Offers"
 msgstr "Toutes les offres"
 
-#: job-offer.php:355
+#: job-offer.php:360
 msgid "Parent Offers:"
 msgstr "Offre parente:"
 
-#: job-offer.php:356
+#: job-offer.php:361
 msgid "Search Offers"
 msgstr "Rechercher des offres"
 
-#: job-offer.php:357
+#: job-offer.php:362
 msgid "No offers found"
 msgstr "Aucune offres trouv&eacute;es"
 
-#: job-offer.php:358
+#: job-offer.php:363
 msgid "No offers found in Trash"
 msgstr "Aucune offres trouv&eacute;es dans la corbeille"
 
-#: job-offer.php:360
+#: job-offer.php:365
 msgid "Job or Traineeship offers."
 msgstr "Offre d'emploi ou de stage."
 
-#: job-offer.php:399
+#: job-offer.php:415
 msgid "Nothing offers are currently present."
 msgstr "Aucune offres n'est actuellement disponible."
 
-#: job-offer.php:403
+#: job-offer.php:419
 msgid "Type of offers"
 msgstr "Type de contrat"
 
-#: job-offer.php:404
+#: job-offer.php:420
 msgid "Offer title"
 msgstr "Référence de l'offre"
 
-#: job-offer.php:436
+#: job-offer.php:452
 msgid "No offer found"
 msgstr "Aucune offre trouvée"
 
-#: template-add-offer-admin-page.php:13 template-update-offer-admin-page.php:17
+#: template-add-offer-admin-page.php:13 template-update-offer-admin-page.php:35
 #: template-view-offer-admin-page.php:6
 msgid "Job Offer"
 msgstr "Offre d&#039;emploi"
@@ -145,19 +153,23 @@ msgstr "Offre d&#039;emploi"
 msgid "Add a new Offer"
 msgstr "Ajouter une nouvelle offre"
 
-#: template-add-offer-admin-page.php:21 template-update-offer-admin-page.php:25
+#: template-add-offer-admin-page.php:21 template-update-offer-admin-page.php:43
 msgid "Title"
 msgstr "Titre"
 
-#: template-add-offer-admin-page.php:29 template-update-offer-admin-page.php:30
+#: template-add-offer-admin-page.php:29 template-update-offer-admin-page.php:48
 msgid "Content"
 msgstr "Contenu"
 
-#: template-add-offer-admin-page.php:37 template-update-offer-admin-page.php:35
+#: template-add-offer-admin-page.php:37 template-update-offer-admin-page.php:53
 msgid "Type"
 msgstr "Type"
 
-#: template-update-offer-admin-page.php:21
+#: template-add-offer-admin-page.php:42 template-update-offer-admin-page.php:58
+msgid "Visible"
+msgstr "Visible"
+
+#: template-update-offer-admin-page.php:39
 msgid "Update an Offer"
 msgstr "Modifier une offre"
 
@@ -175,7 +187,7 @@ msgstr "Rafraichir la page"
 
 #: template-view-offer-admin-page.php:17
 msgid "No offers were found."
-msgstr "Aucune offre n'a &eacute;t&eacute; trouv&eacute;e."
+msgstr "Aucune offre n&#039;a &eacute;t&eacute; trouv&eacute;e."
 
 #: template-view-offer-admin-page.php:22
 msgid "Id of offer"
@@ -190,22 +202,34 @@ msgid "Title of offer"
 msgstr "Titre de l&#039;offre"
 
 #: template-view-offer-admin-page.php:25
+msgid "Visibility of offer"
+msgstr "Visibilit&eacute; de l&#039;offre"
+
+#: template-view-offer-admin-page.php:26
 msgid "Update offer"
 msgstr "Modifier une offre"
 
-#: template-view-offer-admin-page.php:26
+#: template-view-offer-admin-page.php:27
 msgid "Delete offer"
 msgstr "Supprimer une offre"
 
-#: template-view-offer-admin-page.php:27
+#: template-view-offer-admin-page.php:28
 msgid "Shortcode"
 msgstr "Shortcode"
 
-#: template-view-offer-admin-page.php:35
+#: template-view-offer-admin-page.php:38
+msgid "Show in website"
+msgstr "Visible sur le site"
+
+#: template-view-offer-admin-page.php:38
+msgid "Hidden in website"
+msgstr "Cach&eacute; sur le site"
+
+#: template-view-offer-admin-page.php:41
 msgid "Update"
 msgstr "Mettre &agrave; jour"
 
-#: template-view-offer-admin-page.php:36
+#: template-view-offer-admin-page.php:42
 msgid "Delete"
 msgstr "Suppression"
 

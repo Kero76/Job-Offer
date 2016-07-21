@@ -4,7 +4,7 @@ Donate link:
 Tags: job, jobs, offer, offers, traineeship
 Requires at least: 4.5
 Tested up to: 4.5
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: Licence GPLv2 or Later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,7 @@ For more information, contact developer (Nicolas GILLE <nic.gille@gmail.com>).
 * Create custom post to avoid to spamm WordPress post.
 * Generate shortcodes for simplify integration on your website.
 * Generate list of all offers present in database and redirect users on offer's information.
+* Show/Hide offer directly in Job Offer setting.
 * Use shortcodes for generate one offer information if you like, for customised style for example.
 * See directly and auto select shortcode beside all offers view.
 * Modification of offer thanks to Offer post. 
@@ -66,6 +67,9 @@ No questions yet.
 Nothing here for the moment.
 
 == Changelog ==
+
+= 1.2.1 =
+Added Show/Hide function in offer for show or hide it on website.
 
 = 1.2.0 =
 Possibility to update an offer on post offer section and return modification on Job Offer setting.

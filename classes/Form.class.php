@@ -5,6 +5,8 @@
  * All of these methods return an elements presents on admin page.
  * This object is create for centralize all form fields.
  * 
+ * @since Job Offer 1.2.1 
+ *  -> Added function get_visibility_form()
  * @since Job Offer 1.0.0
  * @version 1.0.0
  */
@@ -92,6 +94,27 @@ class Form {
         }
         $str .= '</select>';
         return $str;
+    }
+    
+    /**
+     * Return radio button form.
+     * 
+     * It autochecked the good entry when it passed on parameter.
+     * So if the offer is visible, the radio will checked on Yes button.
+     * Otherwise, it auto-check the No entry.
+     * 
+     * @param boolean $visibility
+     *  
+     */
+    public function get_visibility_form($visibility = false) {
+        if (!$visibility) {
+            $visible = '<input type="radio" name="jo_visibility" value="Yes">' . __('Yes') . ' ';
+            $visible .= '<input type="radio" name="jo_visibility" value="No" checked>' . __('No');
+        } else {
+            $visible = '<input type="radio" name="jo_visibility" value="Yes" checked>' . __('Yes') . ' ';
+            $visible .= '<input type="radio" name="jo_visibility" value="No">' . __('No');
+        }
+        return $visible;
     }
     
     /**

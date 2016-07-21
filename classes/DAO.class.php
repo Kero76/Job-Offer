@@ -10,6 +10,9 @@ require_once('Enum.class.php');
  * She implement the Design Pattern Singleton because only one connexion with the Database
  * are necessary for running the plugin and avoid to create at each time an object DAO.
  * 
+ * @since Job Offer 1.2.1
+ *  -> Added visibility parameter in insert and update functions.
+ *  -> Added pending or publish status in function of offer visibility.
  * @since Job Offer 1.2.0
  *  -> Added new methods for retrieve post id thanks to offer id and retrieve post title and post content thanks to post id.
  * @since Job Offer 1.1.2
@@ -30,7 +33,7 @@ require_once('Enum.class.php');
  *  -> Added ORDER BY id ASC into query method.
  *  -> Creation, deletion and update wp_posts table for create post for each Offer from custom table.
  * @since Job Offer 1.0.0
- * @version 1.1.4
+ * @version 1.1.5
  */
 class DAO {
     
@@ -128,15 +131,17 @@ class DAO {
         $sql = $wpdb->insert(
             $this->_job_offer_table_name,
             array(
-                'id' => $offer->get_id(),
-                'title' => $offer->get_title(),
-                'content' => $offer->get_content(),
-                'type' => $idType,
+                'id'         => $offer->get_id(),
+                'title'      => $offer->get_title(),
+                'content'    => $offer->get_content(),
+                'type'       => $idType,
+                'visibility' => $offer->get_visibility(),
             ),
             array(
                 '%d',
                 '%s',
                 '%s',
+                '%d',
                 '%d',
             )
         );
@@ -172,14 +177,16 @@ class DAO {
         $sql = $wpdb->update(
             $this->_job_offer_table_name,
             array(
-                'title' => $offer->get_title(),
-                'content' => $offer->get_content(),
-                'type' => $idType,
+                'title'      => $offer->get_title(),
+                'content'    => $offer->get_content(),
+                'type'       => $idType,
+                'visibility' => $offer->get_visibility(),
             ),
             array('id' => $offer->get_id()),
             array(
                 '%s',
                 '%s',
+                '%d',
                 '%d',
             ),
             array('%d')
@@ -258,6 +265,7 @@ class DAO {
             'jo_id'         => $this->_job_offer_table_name . '.id',
             'jo_title'      => $this->_job_offer_table_name . '.title',
             'jo_type'       => $this->_job_offer_table_name . '.type',
+            'jo_visibility' => $this->_job_offer_table_name . '.visibility',
             'post_title'    => $post_table . '.post_title',
         );
         
@@ -265,7 +273,8 @@ class DAO {
                 " FROM " . $this->_job_offer_table_name . 
                 " JOIN " . $post_table . 
                 " ON "   . $parameters['post_title'] . " = " . $parameters['jo_title'] .
-                " WHERE `post_status` = 'publish' AND `post_type` = \"job-offer\" ORDER BY " . $parameters['jo_id'] . " ASC";
+                " WHERE `post_status` = 'publish' AND `post_type` = \"job-offer\"" .
+                " ORDER BY " . $parameters['jo_id'] . " ASC";
         
         return $wpdb->get_results($sql, ARRAY_A);
     }
@@ -369,11 +378,18 @@ class DAO {
             $id_user = 1;
         }
         
+        $post_status = '';
+        if ($offer->get_visibility()) {
+            $post_status = 'publish';
+        } else {
+            $post_status = 'pending';
+        }
+        
         $post = array(
             'post_title'        => $offer->get_title(),
             'post_content'      => $offer->get_content(),
             'post_name'         => sanitize_title($offer->get_title()),
-            'post_status'       => 'pending',
+            'post_status'       => $post_status,
             'post_author'       => $id_user,
             'comment_status'    => 'closed',
             'post_type'         => 'job-offer',
@@ -401,11 +417,19 @@ class DAO {
         $request = 'SELECT ID FROM `' . $post_table_name . '` WHERE `post_name` = "' . sanitize_title($oldData['title']) . '"';
         $result = $wpdb->get_row($request, ARRAY_A);
         
+        $post_status = '';
+        if ($offer->get_visibility()) {
+            $post_status = 'publish';
+        } else {
+            $post_status = 'pending';
+        }
+        
         $post = array(
             'ID'            => $result['ID'],
             'post_title'    => $offer->get_title(),
             'post_content'  => $offer->get_content(),
             'post_name'     => sanitize_title($offer->get_title()),
+            'post_status'   => $post_status,
         );
         wp_update_post($post);
     }

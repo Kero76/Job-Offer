@@ -39,6 +39,11 @@
             </tr>
             
             <tr>
+                <th><label for="jo_visibility"><?php _e('Visible', 'job_offer'); ?></label></th>
+                <td><?php echo $form->get_visibility_form(); ?></td>
+            </tr>
+            
+            <tr>
                 <td><?php echo $form->get_submit_button_form(); ?></td>
             </tr>            
         </table>
