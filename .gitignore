@@ -1,2 +1,3 @@
 # Ide config files #
-**/nbproject/
+/vendor/*
+/.idea/*

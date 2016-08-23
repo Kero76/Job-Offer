@@ -2,6 +2,8 @@
  * Using 'jQuery' and not '$' to writing code because Wordpress
  * uses '$' selector and if I use it too, it can create some bugs.
  *
+ * @since Job Offer 1.2.2
+ *  -> Fixed variable json named for translations.
  * @since Job Offer 1.1.1
  *  -> Fixed autorefresh for performed only with specifics actions.
  * @since Job Offer 1.1.0
@@ -56,8 +58,8 @@ jQuery(document).ready(function() {
         }
         
                 
-        (title == '') ? jQuery('#job-offer-warning-message-title').text('Title is empty').show() : jQuery('#job-offer-warning-message-title').hide();
-        (content == '') ? jQuery('#job-offer-warning-message-content').text('Content is empty').show() : jQuery('#job-offer-warning-message-content').hide();
+        (title === '') ? jQuery('#job-offer-warning-message-title').text(jo_translation.empty_title).show() : jQuery('#job-offer-warning-message-title').hide();
+        (content === '') ? jQuery('#job-offer-warning-message-content').text(jo_translation.empty_content).show() : jQuery('#job-offer-warning-message-content').hide();
         if ((title == '') || (content ==''))
             event.preventDefault();
     });

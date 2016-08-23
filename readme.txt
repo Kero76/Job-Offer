@@ -1,10 +1,10 @@
 === Job Offer by Nicolas GILLE ===
 Contributors: Nicolas GILLE <nic.gille@gmail.com>
-Donate link: 
+Donate link:
 Tags: job, jobs, offer, offers, traineeship
 Requires at least: 4.5
-Tested up to: 4.5
-Stable tag: 1.2.1
+Tested up to: 4.6
+Stable tag: 1.2.2
 License: Licence GPLv2 or Later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -67,6 +67,9 @@ No questions yet.
 Nothing here for the moment.
 
 == Changelog ==
+
+= 1.2.2 =
+Fix some translations bug in backend and frontend view.
 
 = 1.2.1 =
 Added Show/Hide function in offer for show or hide it on website.

@@ -3,9 +3,9 @@
 Plugin Name: Job Offer
 Plugin URI: 
 Description: This plugin is used for create job or traineership offer for your website. In fact, lot of companies website wish create job or traineeship offer for recrut. So thanks Job Offer, these societies can generate directly offers on their website.
-Version: 1.2.1
+Version: 1.2.2
 Author: Nicolas GILLE
-Author URI:
+Author URI: http://nicolas-gille.fr
 Licence: GPLv2+ or later
 Licence URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: job-offer
@@ -57,7 +57,12 @@ if (!class_exists('JobOffer')) {
      * 
      * This class is the main class of plugin. 
      * In fact, it centralize all methods which enable to run the plugin.
-     * 
+     *
+     * @since Job Offer 1.2.2
+     *  -> Remove $enum = Enum::get_instance() and replace $enum by get_instance() method.
+     *  -> Remove $_dao attribute and replace it by DAO::get_instance().
+     *  -> Fix translation failed in Frontend method.
+     *  -> Fix translation failed in custom script.
      * @since Job Offer 1.2.1
      *  -> Added visibility range in job_offer table creation.
      *  -> Added parameter visibility in all functions using DAO functions.
@@ -76,19 +81,9 @@ if (!class_exists('JobOffer')) {
      *  -> Creation of private method _update_offer($id, $title, $content, $type).
      *  -> Modify function shortcode_all_offers for generate a link for see all informations about offers.
      * @since Job Offer 1.0.0
-     * @version 1.1.2
+     * @version 1.2.0
      */
     class JobOffer {
-        
-        /**
-         * Object DAO representing link with Database.
-         * 
-         * @access private
-         * @var object
-         *  A DAO object for interact with Database. 
-         */
-        private $_dao;
-        
         /**
          * Constructor used for initialized plugin methods.
          * 
@@ -108,7 +103,6 @@ if (!class_exists('JobOffer')) {
                 add_shortcode('jo_jobs', array($this, 'shortcode_all_offers'));
                 add_shortcode('jo_job', array($this, 'shortcode_offer'));
             }
-            $this->_dao = DAO::get_instance();
         }
         
         /**
@@ -207,7 +201,7 @@ if (!class_exists('JobOffer')) {
                 /** DELETE SECTION **/
                 case 'deleteoffer' :
                     if (isset($_GET['id'])) {
-                        if ($this->_dao->delete(intval($_GET['id']))) {
+                        if (DAO::get_instance()->delete(intval($_GET['id']))) {
                             //header('Location:' . get_bloginfo('url') . '/wp-admin/options-general.php?page=job-offer/job-offer.php&deleteoffer=ok');
                         } else {
                             echo '<span class="job-offer-error job-offer-bold">' . __('An error occured, please contact a developper for fix it.', 'job-offer') . '</span>';
@@ -260,14 +254,13 @@ if (!class_exists('JobOffer')) {
          */
         public function get_offers(array $request) {
             $offers = $request;
-            $enum = Enum::get_instance();
             $results = array();
             foreach($offers as $offer) {
                 $data = array(
                     'id'         => $offer['id'],
                     'title'      => $offer['title'],
                     'content'    => $offer['content'],
-                    'type'       => new EnumType($enum->get_key_by_id(intval($offer['type']))),
+                    'type'       => new EnumType(Enum::get_instance()->get_key_by_id(intval($offer['type']))),
                     'visibility' => $offer['visibility'],
                 );
                 array_push($results, new Offer($data));
@@ -287,14 +280,13 @@ if (!class_exists('JobOffer')) {
          *  A hydrate object with the data retrieved from the database.
          */
         public function get_offer($id) {
-            $offer = $this->_dao->query($id);
-            $enum = Enum::get_instance();
+            $offer = DAO::get_instance()->query($id);
             
             $data = array(
                 'id'         => $offer['id'],
                 'title'      => $offer['title'],
                 'content'    => $offer['content'],
-                'type'       => new EnumType($enum->get_key_by_id(intval($offer['type']))),
+                'type'       => new EnumType(Enum::get_instance()->get_key_by_id(intval($offer['type']))),
                 'visibility' => $offer['visibility'],
             );
             return new Offer($data);
@@ -330,10 +322,10 @@ if (!class_exists('JobOffer')) {
                 wp_enqueue_script('job-offer-admin-script');
                 
                 if (function_exists('wp_localize_script')) {
-                    wp_localize_script('job-offer-admin-script', 'jo-translation', array(
-                        'empty-title'       => __('Title is empty.', 'job-offer'),
-                        'empty-content'     => __('Content is empty.', 'job-offer'),
-                        'confirm-deletion'  => __('Really want to delete this offer ? (This action is irreversible)', 'job-offer'),
+                    wp_localize_script('job-offer-admin-script', 'jo_translation', array(
+                        'empty_title'       => __('Title is empty.', 'job-offer'),
+                        'empty_content'     => __('Content is empty.', 'job-offer'),
+                        'confirm_deletion'  => __('Really want to delete this offer ? (This action is irreversible)', 'job-offer'),
                     ));
                 }
             }
@@ -409,10 +401,10 @@ if (!class_exists('JobOffer')) {
          * It used for generate a shortcode who placed on post page.
          */
         public function shortcode_all_offers() {
-            $offers = $this->get_offers($this->_dao->get_publish_post());
+            $offers = $this->get_offers(DAO::get_instance()->get_publish_post());
                         
             if (count($offers) == 0) {
-                $str = '<p>' . __('Nothing offers are currently present.') . '</p>';
+                $str = '<p>' . __('Nothing offers are currently present.', 'job-offer') . '</p>';
             } else {
                 $str = '<table>';
                 $str .= '<tr>';
@@ -478,7 +470,7 @@ if (!class_exists('JobOffer')) {
         *   The state of the request.
         */
        private function _insert_offer($title, $content, $type, $visibility) {
-            $id = $this->_dao->get_max_id() + 1;
+            $id = DAO::get_instance()->get_max_id() + 1;
             if ($id == '') {
                 $id = 0;
             }
@@ -488,9 +480,8 @@ if (!class_exists('JobOffer')) {
             } else {
                 $is_visible = false;    
             }
-            
-            $enum = Enum::get_instance();
-            $offerType = $enum->get_enum()[$type];
+
+            $offerType = Enum::get_instance()->get_enum()[$type];
             $data = array(
                 'id'         => intval($id),
                 'title'      => stripslashes($title),
@@ -499,7 +490,7 @@ if (!class_exists('JobOffer')) {
                 'visibility' => $is_visible,
             );
             $offer = new Offer($data);
-            return $this->_dao->insert($offer);
+            return DAO::get_instance()->insert($offer);
        }
 
        /**
@@ -524,8 +515,7 @@ if (!class_exists('JobOffer')) {
         *   The state of the request.
         */
        private function _update_offer($id, $title, $content, $type, $visibility) {
-            $enum = Enum::get_instance();
-            $offerType = $enum->get_enum()[$type];
+            $offerType = Enum::get_instance()->get_enum()[$type];
             
             if ($visibility === "Yes") {
                 $is_visible = true;
@@ -541,7 +531,7 @@ if (!class_exists('JobOffer')) {
                 'visibility' => $is_visible,
             );
             $offer = new Offer($data);
-            return $this->_dao->update($offer);    
+            return DAO::get_instance()->update($offer);
        }
     } /** END CLASS **/
 }

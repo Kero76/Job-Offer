@@ -1,5 +1,5 @@
 <?php
-    $offers = $this->get_offers($this->_dao->query());
+    $offers = $this->get_offers(DAO::get_instance()->query());
 ?>
 
 <div class="wrap">

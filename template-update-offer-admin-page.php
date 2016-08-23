@@ -4,7 +4,6 @@
     require_once('classes/Offer.class.php');
     
     $form = new Form();
-    $enum = Enum::get_instance();
     
     /*
      * Verification of $_GET value exist and not empty.
@@ -15,8 +14,8 @@
      */
     if (!isset($_GET['id]'])) {
         $db_offer = $this->get_offer($_GET['id']);
-        $post_id = $this->_dao->get_post_id_by_offer_id($db_offer->get_id());
-        $post_offer = $this->_dao->get_post_elements($post_id);
+        $post_id = DAO::get_instance()->get_post_id_by_offer_id($db_offer->get_id());
+        $post_offer = DAO::get_instance()->get_post_elements($post_id);
     
         $offer = new Offer(array(
             'id'         => $db_offer->get_id(),
@@ -51,7 +50,7 @@
             
             <tr>
                 <th><label for="jo_type"><?php _e('Type', 'job-offer'); ?></label></th>
-                <td><?php echo $form->get_type_offer_form($enum, $offer->get_type()); ?></td>
+                <td><?php echo $form->get_type_offer_form(Enum::get_instance(), $offer->get_type()); ?></td>
             </tr>
             
             <tr>
