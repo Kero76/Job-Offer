@@ -63,6 +63,7 @@ if (!class_exists('JobOffer')) {
      *  -> Remove $_dao attribute and replace it by DAO::get_instance().
      *  -> Fix translation failed in Frontend method.
      *  -> Fix translation failed in custom script.
+     *  -> Fix translation failed on pop-up deletion.
      * @since Job Offer 1.2.1
      *  -> Added visibility range in job_offer table creation.
      *  -> Added parameter visibility in all functions using DAO functions.
@@ -177,7 +178,7 @@ if (!class_exists('JobOffer')) {
                     if (isset($_POST['jo_title'], $_POST['jo_content'], $_POST['jo_type'], $_POST['jo_visibility'])) {
                         if ((trim($_POST['jo_title']) != '') && (trim($_POST['jo_content']) != '') && (trim($_POST['jo_type']) != '') && $_POST['jo_visibility']) {                  
                             if ($this->_insert_offer($_POST['jo_title'], $_POST['jo_content'], $_POST['jo_type'], $_POST['jo_visibility'])) {
-                                //header('Location:' . get_bloginfo('url') . '/wp-admin/options-general.php?page=job-offer/job-offer.php&addoffer=ok');
+                                wp_redirect(get_bloginfo('url') . '/wp-admin/options-general.php?page=job-offer/job-offer.php&addoffer=ok');
                             } else {
                                 echo '<span class="job-offer-error job-offer-bold">' . __('An error occured, please contact a developper for fix it.', 'job-offer') . '</span>';
                             }
@@ -190,7 +191,7 @@ if (!class_exists('JobOffer')) {
                     if (isset($_POST['jo_title'], $_POST['jo_content'], $_POST['jo_type'], $_POST['jo_id'])) {
                         if ((trim($_POST['jo_title']) != '') && (trim($_POST['jo_content']) != '') && (trim($_POST['jo_type'] && $_POST['jo_visibility']) != '')) {
                             if ($this->_update_offer($_POST['jo_id'], $_POST['jo_title'], $_POST['jo_content'], $_POST['jo_type'], $_POST['jo_visibility'])) {
-                                //header('Location:' . get_bloginfo('url') . '/wp-admin/options-general.php?page=job-offer/job-offer.php&updateoffer=ok');
+                                wp_redirect(get_bloginfo('url') . '/wp-admin/options-general.php?page=job-offer/job-offer.php&updateoffer=ok');
                             } else {
                                 echo '<span class="job-offer-error job-offer-bold">' . __('An error occured, please contact a developper for fix it.', 'job-offer') . '</span>';
                             }
@@ -202,7 +203,7 @@ if (!class_exists('JobOffer')) {
                 case 'deleteoffer' :
                     if (isset($_GET['id'])) {
                         if (DAO::get_instance()->delete(intval($_GET['id']))) {
-                            //header('Location:' . get_bloginfo('url') . '/wp-admin/options-general.php?page=job-offer/job-offer.php&deleteoffer=ok');
+                            wp_redirect(get_bloginfo('url') . '/wp-admin/options-general.php?page=job-offer/job-offer.php&deleteoffer=ok');
                         } else {
                             echo '<span class="job-offer-error job-offer-bold">' . __('An error occured, please contact a developper for fix it.', 'job-offer') . '</span>';
                         }

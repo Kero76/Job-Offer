@@ -4,6 +4,7 @@
  *
  * @since Job Offer 1.2.2
  *  -> Fixed variable json named for translations.
+ *  -> Fixed message translation before deletion because not used translation setting.
  * @since Job Offer 1.1.1
  *  -> Fixed autorefresh for performed only with specifics actions.
  * @since Job Offer 1.1.0
@@ -42,7 +43,7 @@ jQuery(document).ready(function() {
     }
     
     /**
-     * This function add an protection from forms used in admin page.
+     * This function add a protection from form used in admin page.
      * Indeed, before submit the new offer or update offer, it verify the content of all
      * fields and if one of them is empty, the submission is canceled to avoid to send empty data on Database.
      * Furthermore, a little message appear under the field for precised the error.
@@ -70,33 +71,21 @@ jQuery(document).ready(function() {
      * you can potentially deleted on offer. So thos action is a protection against that.
      */
     jQuery('.job-offer-button-deletion').click(function(event) {
-        if (!confirm('Really want to delete this offer ? (This action is irreversible)')) {
+        if (!confirm(jo_translation.confirm_deletion)) {
             event.preventDefault();
         }
     });
-    
+
     /**
      * Reload the current page after a click on a button.
-     * 
+     *
      * @param object window
      *  The object represent the window.
      */
-    
+
     jQuery('.job-offer-refresh-btn').click(function() {
         jQuery(window).load(function() {
             location.reload(true);
         });
     });
-    
-    
-    /**
-     * This function split current url and search '&action=updateoffer', '&action=adoffer' of '&action=deleteoffer' substring.
-     * If it find substring, it split url, and rewrite url without string after '&action'
-     * for rewrite correctly the url and reload the page for refresh page.
-     */
-    var url = window.location.href;   
-    if (~url.indexOf('&action=updateoffer') || ~url.indexOf('&action=addoffer') || ~url.indexOf('&action=deleteoffer')) {
-        var split = url.split('&action=');
-        window.location.href = split[0];
-    }
 });

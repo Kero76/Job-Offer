@@ -50,8 +50,7 @@ msgstr "Enregistrer l&#039;offre"
 
 #: job-offer.php:188 job-offer.php:201 job-offer.php:213
 msgid "An error occured, please contact a developper for fix it."
-msgstr ""
-"Une erreur interne est survenue, merci de contacter le développeur pour "
+msgstr "Une erreur interne est survenue, merci de contacter le développeur pour "
 "corriger ça."
 
 #: job-offer.php:228
@@ -76,8 +75,7 @@ msgstr "Le champ Contenu est vide."
 
 #: job-offer.php:336
 msgid "Really want to delete this offer ? (This action is irreversible)"
-msgstr ""
-"Voulez vous vraiment supprimer cette offre ? (Cette action est irr&eacute;"
+msgstr "Voulez vous vraiment supprimer cette offre ? (Cette action est irr&eacute;"
 "versible)"
 
 #: job-offer.php:351 job-offer.php:353
